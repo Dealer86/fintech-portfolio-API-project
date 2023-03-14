@@ -1,2 +1,3 @@
-# itschool3-finance-project
-Final project for ItSchool, Python - Intro To Programming
+# Finance API
+
+Final project for ItSchool course, Python - Intro To Programming.
