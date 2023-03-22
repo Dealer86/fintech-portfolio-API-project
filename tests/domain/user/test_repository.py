@@ -1,8 +1,31 @@
 import unittest
 
-class MyTestCase(unittest.TestCase):
-    def test_something(self):
-        self.assertEqual(True, False)  # add assertion here
+from domain.user.factory import UserFactory
+from domain.user.repo import UserRepo
 
-if __name__ == '__main__':
+
+class UserRepoTestCase(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.users_file = "test_users.json"
+        cls.repo = UserRepo(cls.users_file)
+
+    def test_it_adds_a_user(self):
+        expected_username = "a-username"
+        new_user = UserFactory().make(expected_username)
+
+        self.repo.add(new_user)
+
+        actual_users = self.repo.get_all()
+        self.assertEqual(1, len(actual_users))
+        self.assertEqual(expected_username, actual_users[0].username)
+
+    def test_it_reads_a_user_from_the_system(self):
+        repo = UserRepo(self.users_file)
+
+        actual_users = repo.get_all()
+        self.assertEqual(1, len(actual_users))
+
+
+if __name__ == "__main__":
     unittest.main()
