@@ -20,7 +20,6 @@ class UserMyTestCase(unittest.TestCase):
 
         self.assertEqual([], actual_stocks)
 
-    @unittest.skip("TODO: Homework")
     def test_it_sets_the_stocks_we_give(self):
         username = "random_name"
         stock_list = ["first", "second", "third"]
