@@ -18,9 +18,15 @@ class UserRepo:
         self.__users.append(new_user)
         users_info = [x.username for x in self.__users]
         users_json = json.dumps(users_info)
+        # TODO Homework refactor with
         file = open(self.file_path, "w")
         file.write(users_json)
         file.close()
 
     def get_all(self) -> list[User]:
         return self.__users
+
+    def get_by_username(self, username) -> User:
+        for u in self.__users:
+            if u.username == username:
+                return u
