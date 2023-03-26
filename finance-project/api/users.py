@@ -23,3 +23,8 @@ def get_user(username: str):
 def create_a_user(new_user: UserAdd):
     user = UserFactory().make(new_user.username)
     repo.add(user)
+
+
+@users_router.delete("")
+def delete_a_user(name: str):
+    repo.delete(name)
