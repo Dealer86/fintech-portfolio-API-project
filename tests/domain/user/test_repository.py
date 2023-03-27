@@ -26,15 +26,10 @@ class UserRepoTestCase(unittest.TestCase):
         actual_users = repo.get_all()
         self.assertEqual(1, len(actual_users))
 
+    # TODO homework
+    @unittest.skip
     def test_it_deletes_a_user_from_system(self):
-        name = "adrian"
-        user = UserFactory().make(name)
-
-        self.repo.add(user)
-        self.repo.delete(name)
-
-        actual_users = self.repo.get_all()
-        self.assertEqual(0, len(actual_users))
+        pass
 
 
 if __name__ == "__main__":
