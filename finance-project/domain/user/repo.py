@@ -15,7 +15,7 @@ class UserRepo:
 
     def add(self, new_user: User):
         self.__users.append(new_user)
-        users_info = [x.username for x in self.__users]
+        users_info = [(x.id, x.username) for x in self.__users]
         users_json = json.dumps(users_info)
         with open(self.file_path, "w") as f:
             f.write(users_json)
@@ -23,19 +23,22 @@ class UserRepo:
     def get_all(self) -> list[User]:
         return self.__users
 
-    def get_by_username(self, username) -> User:
+    def get_by_id(self, id_: str) -> User:
         for u in self.__users:
-            if u.username == username:
+            if u.id == id_:
                 return u
 
-    def delete(self, name: str):
-        with open(self.file_path, "r") as f:
+    def delete_by_id(self, id_: str):
+        with open(self.file_path) as f:
             data = json.load(f)
-        element_to_delete = name
-        if element_to_delete in data:
-            data.remove(element_to_delete)
+
+        for i in range(len(data)):
+            if data[i][0] == id_:
+                del data[i]
+                break
+
         with open(self.file_path, "w") as f:
             json.dump(data, f)
 
-        self.__users = [u for u in self.__users if u.username != name]
+        self.__users = [u for u in self.__users if u.id != id_]
         return self.__users
