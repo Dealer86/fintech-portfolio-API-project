@@ -15,8 +15,8 @@ def get_all_users():
 
 
 @users_router.get("/{username}", response_model=UserInfo)
-def get_user(username: str):
-    return repo.get_by_username(username)
+def get_user(id_: str):
+    return repo.get_by_id(id_)
 
 
 @users_router.post("")
@@ -25,6 +25,6 @@ def create_a_user(new_user: UserAdd):
     repo.add(user)
 
 
-@users_router.delete("")
-def delete_a_user(name: str):
-    repo.delete(name)
+@users_router.delete("/{id_}")
+def delete_a_user(id_: str):
+    repo.delete_by_id(id_)
