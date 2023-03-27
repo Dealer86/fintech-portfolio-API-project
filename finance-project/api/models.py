@@ -8,6 +8,10 @@ class UserAdd(BaseModel):
 
 
 class UserInfo(BaseModel):
+    id: str = Field(
+        description="ID by which to identify a specific user",
+        default=None
+    )
     username: str
     stocks: list[str]
 

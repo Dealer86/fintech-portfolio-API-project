@@ -14,7 +14,7 @@ def get_all_users():
     return repo.get_all()
 
 
-@users_router.get("{/username}", response_model=UserInfo)
+@users_router.get("/{username}", response_model=UserInfo)
 def get_user(username: str):
     return repo.get_by_username(username)
 
