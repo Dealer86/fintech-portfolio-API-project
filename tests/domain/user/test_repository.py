@@ -12,7 +12,7 @@ class UserRepoTestCase(unittest.TestCase):
 
     def test_it_adds_a_user(self):
         expected_username = "a-username"
-        new_user = UserFactory().make(expected_username)
+        new_user = UserFactory().make_new(expected_username)
 
         self.repo.add(new_user)
 

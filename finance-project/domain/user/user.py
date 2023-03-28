@@ -1,11 +1,15 @@
-import uuid
+from uuid import UUID
 
 
 class User:
-    def __init__(self, username: str, stocks: list[str] = None, id_: str = None):
+    def __init__(self, uuid: UUID, username: str, stocks: list[str] = None):
+        self.__id = uuid
         self.__username = username
         self.__stocks = stocks if stocks else []
-        self.__id_ = id_ if id_ is not None else str(uuid.uuid4())
+
+    @property
+    def id(self) -> UUID:
+        return self.__id
 
     @property
     def username(self) -> str:
@@ -14,7 +18,3 @@ class User:
     @property
     def stocks(self) -> list[str]:
         return self.__stocks
-
-    @property
-    def id(self):
-        return self.__id_

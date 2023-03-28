@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field
+from uuid import UUID
 
 
 class UserAdd(BaseModel):
@@ -8,12 +9,18 @@ class UserAdd(BaseModel):
 
 
 class UserInfo(BaseModel):
-    id: str = Field(
+    id: UUID = Field(
         description="ID by which to identify a specific user",
-        default=None
     )
     username: str
     stocks: list[str]
 
     class Config:
         orm_mode = True
+
+
+class AssetInfo(BaseModel):
+    ticker: str
+    units: float
+    name: str
+    country: str

@@ -1,3 +1,4 @@
+from domain.user.factory import UserFactory
 from domain.user.user import User
 import json
 
@@ -5,17 +6,11 @@ import json
 class UserRepo:
     def __init__(self, file_path: str):
         self.file_path = file_path
-        try:
-            with open(self.file_path) as f:
-                contents = f.read()
-            users_info = json.loads(contents)
-            self.__users = [User(x) for x in users_info]
-        except:
-            self.__users = []
+        self.__load()
 
     def add(self, new_user: User):
         self.__users.append(new_user)
-        users_info = [(x.id, x.username) for x in self.__users]
+        users_info = [(str(x.id), x.username, x.stocks) for x in self.__users]
         users_json = json.dumps(users_info)
         with open(self.file_path, "w") as f:
             f.write(users_json)
@@ -28,6 +23,7 @@ class UserRepo:
             if u.id == id_:
                 return u
 
+    # TODO refactor delete
     def delete_by_id(self, id_: str):
         with open(self.file_path) as f:
             data = json.load(f)
@@ -42,3 +38,14 @@ class UserRepo:
 
         self.__users = [u for u in self.__users if u.id != id_]
         return self.__users
+
+    def __load(self):
+        try:
+            with open(self.file_path) as f:
+                contents = f.read()
+            users_info = json.loads(contents)
+            factory = UserFactory()
+            self.__users = [factory.make_from_persistence(x) for x in users_info]
+        except:
+            # TODO thursday logging
+            self.__users = []
