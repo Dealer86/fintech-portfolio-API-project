@@ -3,6 +3,12 @@ from api.users import users_router
 from api.assets import assets_router
 from domain.user.factory import InvalidUsername
 from starlette.responses import JSONResponse
+from logging import getLogger, FileHandler
+
+
+logger = getLogger("financeLogger")
+handler = FileHandler("finance.log")
+logger.addHandler(handler)
 
 app = FastAPI(
     debug=True,
@@ -25,5 +31,8 @@ def return_invalid_username(_: Request, e: InvalidUsername):
 
 if __name__ == "__main__":
     import subprocess
-
-    subprocess.run(["uvicorn", "main:app", "--reload"])
+    logger.info("Starting webserver ...")
+    try:
+        subprocess.run(["uvicorn", "main:app", "--reload"])
+    except Exception as e:
+        logger.warning("Webserver has stopped. Reason: " + str(e))

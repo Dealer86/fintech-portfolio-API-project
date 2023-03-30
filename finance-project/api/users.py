@@ -3,7 +3,7 @@ from fastapi import APIRouter
 from domain.asset.factory import AssetFactory
 from domain.user.repo import UserRepo
 from domain.user.factory import UserFactory
-from api.models import UserAdd, UserInfo, AssetInfo
+from api.models import UserAdd, UserInfo, AssetInfoUser
 
 users_router = APIRouter(prefix="/users")
 
@@ -35,6 +35,7 @@ def delete_a_user(id_: str):
 
 # TODO fix api, return asset info
 # sets", response_model=AssetInfo)
+@users_router.post("/{user_id}/assets", response_model=AssetInfoUser)
 def add_asset_to_user(user_id: str, ticker: str):
     asset = AssetFactory().make_new(ticker)
     print(asset.__dict__)

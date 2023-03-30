@@ -19,8 +19,26 @@ class UserInfo(BaseModel):
         orm_mode = True
 
 
-class AssetInfo(BaseModel):
+class AssetInfoBase(BaseModel):
     ticker: str
-    units: float
     name: str
     country: str
+
+    # TODO refactor to not have duplicate code
+    class Config:
+        orm_mode = True
+
+
+class AssetInfoUser(AssetInfoBase):
+    units: float
+
+
+class AssetInfoPrice(AssetInfoBase):
+    current_price: float
+    currency: str
+    #TODO homework
+    # today_low_price: float
+    # today_high_price: float
+    # open_price: float
+    closed_price: float
+    fifty_day_price: float
