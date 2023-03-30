@@ -20,24 +20,24 @@ class UserRepo:
 
     def get_by_id(self, id_: str) -> User:
         for u in self.__users:
-            if u.id == id_:
+            if str(u.id) == id_:
                 return u
 
-    # TODO refactor delete
     def delete_by_id(self, id_: str):
-        with open(self.file_path) as f:
-            data = json.load(f)
+        self.__users = [u for u in self.__users if str(u.id) != id_]
 
-        for i in range(len(data)):
-            if data[i][0] == id_:
-                del data[i]
-                break
+        with open(self.file_path) as f:
+            content = f.read()
+        users_info = json.loads(content)
+
+        for every_user in users_info:
+            if every_user[0] == id_:
+                users_info.remove(every_user)
 
         with open(self.file_path, "w") as f:
-            json.dump(data, f)
+            json.dump(users_info, f)
 
-        self.__users = [u for u in self.__users if u.id != id_]
-        return self.__users
+
 
     def __load(self):
         try:
@@ -49,3 +49,4 @@ class UserRepo:
         except:
             # TODO thursday logging
             self.__users = []
+

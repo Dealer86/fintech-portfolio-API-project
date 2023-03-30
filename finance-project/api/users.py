@@ -16,7 +16,7 @@ def get_all_users():
 
 
 # TODO GET /users/{user_id}
-@users_router.get("/{username}", response_model=UserInfo)
+@users_router.get("/{user_id}", response_model=UserInfo)
 def get_user(id_: str):
     return repo.get_by_id(id_)
 
@@ -28,8 +28,7 @@ def create_a_user(new_user: UserAdd):
     return user
 
 
-# Todo delete a user, DELETE /users{user_id}
-@users_router.delete("/{id_}")
+@users_router.delete("/{user_id}")
 def delete_a_user(id_: str):
     repo.delete_by_id(id_)
 
