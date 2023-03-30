@@ -1,4 +1,5 @@
 import unittest
+import uuid
 
 from domain.user.factory import UserFactory, InvalidUsername
 from domain.user.user import User
@@ -56,6 +57,21 @@ class UserFactoryTestCase(unittest.TestCase):
             "Username should contain only alpha-numeric characters or '-'",
             str(context.exception),
         )
+
+    def test_make_from_persistence(self):
+        # set up
+        factory = UserFactory()
+        user_id = uuid.uuid4()
+        username = "random-123"
+        stocks = ["AAPL", "GOOG", "TSLA"]
+        info = (str(user_id), username, stocks)
+        # execution
+        actual_user = factory.make_from_persistence(info)
+        # assertion
+        self.assertIsInstance(actual_user, User)
+        self.assertEqual(actual_user.id, user_id)
+        self.assertEqual(actual_user.username, username)
+        self.assertEqual(actual_user.stocks, stocks)
 
 
 if __name__ == "__main__":
