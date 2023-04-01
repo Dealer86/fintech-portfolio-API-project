@@ -17,8 +17,8 @@ def get_all_users():
 
 # TODO GET /users/{user_id}
 @users_router.get("/{user_id}", response_model=UserInfo)
-def get_user(id_: str):
-    return repo.get_by_id(id_)
+def get_user(user_id: str):
+    return repo.get_by_id(user_id)
 
 
 @users_router.post("", response_model=UserInfo)
@@ -29,8 +29,8 @@ def create_a_user(new_user: UserAdd):
 
 
 @users_router.delete("/{user_id}")
-def delete_a_user(id_: str):
-    repo.delete_by_id(id_)
+def delete_a_user(user_id: str):
+    repo.delete_by_id(user_id)
 
 
 # TODO fix api, return asset info
