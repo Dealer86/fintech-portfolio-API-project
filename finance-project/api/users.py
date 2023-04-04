@@ -4,10 +4,11 @@ from domain.asset.factory import AssetFactory
 from domain.user.repo import UserRepo
 from domain.user.factory import UserFactory
 from api.models import UserAdd, UserInfo, AssetInfoUser
+from persistence.user_file import UserPersistenceFile
 
 users_router = APIRouter(prefix="/users")
-
-repo = UserRepo("main_users.json")
+user_persistence = UserPersistenceFile("main_users.json")
+repo = UserRepo(user_persistence)
 
 
 @users_router.get("", response_model=list[UserInfo])
