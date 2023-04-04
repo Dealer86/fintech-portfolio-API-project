@@ -1,6 +1,5 @@
 import yahooquery
 from domain.asset.asset import Asset
-import pandas as pd
 
 
 class AssetFactory:
@@ -22,8 +21,8 @@ class AssetFactory:
             sector=sector,
         )
 
-    # TODO make it class or static method, why? we don't use self
-    def __extract_name(self, profile: dict) -> str:
+    @staticmethod
+    def __extract_name(profile: dict) -> str:
         summary = profile["longBusinessSummary"]
         words = summary.split(" ")
         first_2_words = words[0:2]
