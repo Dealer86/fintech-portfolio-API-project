@@ -2,31 +2,29 @@ from pydantic import BaseModel, Field
 from uuid import UUID
 
 
+class OrmModel(BaseModel):
+    class Config:
+        orm_mode = True
+
+
 class UserAdd(BaseModel):
     username: str = Field(
         description="Alphanumeric username between 6 and 20 characters"
     )
 
 
-class UserInfo(BaseModel):
+class UserInfo(OrmModel):
     id: UUID = Field(
         description="ID by which to identify a specific user",
     )
     username: str
     stocks: list[str]
 
-    class Config:
-        orm_mode = True
 
-
-class AssetInfoBase(BaseModel):
+class AssetInfoBase(OrmModel):
     ticker: str
     name: str
     country: str
-
-    # TODO refactor to not have duplicate code
-    class Config:
-        orm_mode = True
 
 
 class AssetInfoUser(AssetInfoBase):
@@ -36,7 +34,7 @@ class AssetInfoUser(AssetInfoBase):
 class AssetInfoPrice(AssetInfoBase):
     current_price: float
     currency: str
-    #TODO homework
+    # TODO homework
     # today_low_price: float
     # today_high_price: float
     # open_price: float
