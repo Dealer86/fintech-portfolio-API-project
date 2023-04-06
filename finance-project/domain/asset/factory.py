@@ -27,5 +27,4 @@ class AssetFactory:
         words = summary.split(" ")
         first_2_words = words[0:2]
         name = " ".join(first_2_words)
-        name = name.replace(",", "")
         return name

@@ -17,8 +17,8 @@ def get_asset(ticker: str):
 def get_history(ticker: str):
     t = yfinance.Ticker(ticker)
     history = t.history(interval="1d", start="2019-01-30")
+    print(t.fast_info)
+    print(t.fast_info.values())
     print(history)
     print(type(history))
-
-
-
+    return t.fast_info

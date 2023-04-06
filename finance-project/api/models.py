@@ -25,6 +25,7 @@ class AssetInfoBase(OrmModel):
     ticker: str
     name: str
     country: str
+    sector: str
 
 
 class AssetInfoUser(AssetInfoBase):
@@ -34,9 +35,9 @@ class AssetInfoUser(AssetInfoBase):
 class AssetInfoPrice(AssetInfoBase):
     current_price: float
     currency: str
-    # TODO homework
-    # today_low_price: float
-    # today_high_price: float
-    # open_price: float
+    today_low_price: float
+    today_high_price: float
+    open_price: float
     closed_price: float
     fifty_day_price: float
+    percentage_difference_between_closed_and_current_price: str
