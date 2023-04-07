@@ -10,7 +10,6 @@ class UserPersistenceFile(UserPersistenceInterface):
         self.__file_path = file_path
 
     def get_all(self) -> list[User]:
-
         try:
             with open(self.__file_path) as f:
                 contents = f.read()

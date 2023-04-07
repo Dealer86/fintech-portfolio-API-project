@@ -7,18 +7,15 @@ class OrmModel(BaseModel):
         orm_mode = True
 
 
+# TODO add the field with description, aprox half
 class UserAdd(BaseModel):
     username: str = Field(
         description="Alphanumeric username between 6 and 20 characters"
     )
 
 
-class UserInfo(OrmModel):
-    id: UUID = Field(
-        description="ID by which to identify a specific user",
-    )
-    username: str
-    stocks: list[str]
+class AssetAdd(BaseModel):
+    ticker: str
 
 
 class AssetInfoBase(OrmModel):
@@ -41,3 +38,11 @@ class AssetInfoPrice(AssetInfoBase):
     closed_price: float
     fifty_day_price: float
     percentage_difference_between_closed_and_current_price: str
+
+
+class UserInfo(OrmModel):
+    id: UUID = Field(
+        description="ID by which to identify a specific user",
+    )
+    username: str
+    stocks: list[AssetInfoBase]
