@@ -31,11 +31,6 @@ def create_a_user(new_user: UserAdd):
     return user
 
 
-@users_router.delete("/{user_id}")
-def delete_a_user(user_id: str):
-    repo.delete_by_id(user_id)
-
-
 # TODO fix api, return asset info
 # sets", response_model=AssetInfo)
 @users_router.post("/{user_id}/assets", response_model=AssetInfoUser)

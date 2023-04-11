@@ -8,9 +8,12 @@ class UserPersistenceSqlite(UserPersistenceInterface):
     def get_all(self) -> list[User]:
         with sqlite3.connect("main_users.db") as conn:
             cursor = conn.cursor()
-            # TODO homework, try except return empty lis if no db
-            cursor.execute("SELECT * FROM users")
-            users_info = cursor.fetchall()
+            try:
+                cursor.execute("SELECT * FROM users")
+                users_info = cursor.fetchall()
+            except sqlite3.OperationalError as e:
+                if "no such table" in str(e):
+                    return []
             factory = UserFactory()
         users = [factory.make_from_persistence(x) for x in users_info]
         return users
