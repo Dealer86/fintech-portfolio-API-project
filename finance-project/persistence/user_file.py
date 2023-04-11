@@ -1,4 +1,6 @@
 import json
+import logging
+import uuid
 
 from domain.user.factory import UserFactory
 from domain.user.persistance_interface import UserPersistenceInterface
@@ -16,8 +18,8 @@ class UserPersistenceFile(UserPersistenceInterface):
             users_info = json.loads(contents)
             factory = UserFactory()
             return [factory.make_from_persistence(x) for x in users_info]
-        except:
-            # TODO Homework. log error
+        except Exception as e:
+            logging.warning("Could not read file, reason: " + str(e))
             return []
 
     def add(self, user: User):
