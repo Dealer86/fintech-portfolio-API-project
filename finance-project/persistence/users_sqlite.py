@@ -10,10 +10,12 @@ class UserPersistenceSqlite(UserPersistenceInterface):
             cursor = conn.cursor()
             try:
                 cursor.execute("SELECT * FROM users")
-                users_info = cursor.fetchall()
             except sqlite3.OperationalError as e:
                 if "no such table" in str(e):
                     return []
+                else:
+                    raise e
+            users_info = cursor.fetchall()
             factory = UserFactory()
         users = [factory.make_from_persistence(x) for x in users_info]
         return users
