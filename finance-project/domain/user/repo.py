@@ -25,10 +25,7 @@ class UserRepo:
 
     def get_by_id(self, uid: str) -> User:
         self.__check_we_have_users()
-        for u in self.__users:
-            if u.id == uuid.UUID(hex=uid):
-                assets = AssetRepo().get_for_user(u)
-                return User(uuid=u.id, username=u.username, stocks=assets)
+        return self.__persistence.get_by_id(uid)
 
     def __check_we_have_users(self):
         if self.__users is None:
