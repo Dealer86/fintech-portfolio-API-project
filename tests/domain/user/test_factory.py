@@ -1,5 +1,5 @@
 import unittest
-import uuid
+from uuid import UUID
 
 from domain.user.factory import UserFactory, InvalidUsername
 from domain.user.user import User
@@ -60,18 +60,18 @@ class UserFactoryTestCase(unittest.TestCase):
 
     def test_make_from_persistence(self):
         # set up
-        factory = UserFactory()
-        user_id = uuid.uuid4()
-        username = "random-123"
-        stocks = ["AAPL", "GOOG", "TSLA"]
-        info = (str(user_id), username, stocks)
+        uuid_str = "4a4c58ee-8fd4-415e-9801-947e86b97d7e"
+        username = "random-1"
+        info = (uuid_str, username)
+
         # execution
-        actual_user = factory.make_from_persistence(info)
+        factory = UserFactory()
+        user = factory.make_from_persistence(info)
+
         # assertion
-        self.assertIsInstance(actual_user, User)
-        self.assertEqual(actual_user.id, user_id)
-        self.assertEqual(actual_user.username, username)
-        self.assertEqual(actual_user.stocks, stocks)
+        self.assertIsInstance(user, User)
+        self.assertEqual(user.id, UUID(hex=uuid_str))
+        self.assertEqual(user.username, username)
 
 
 if __name__ == "__main__":
