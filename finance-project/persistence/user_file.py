@@ -2,6 +2,7 @@ import json
 import logging
 import uuid
 
+from domain.asset.repo import AssetRepo
 from domain.user.factory import UserFactory
 from domain.user.persistance_interface import UserPersistenceInterface
 from domain.user.user import User
@@ -29,3 +30,10 @@ class UserPersistenceFile(UserPersistenceInterface):
         users_json = json.dumps(users_info)
         with open(self.__file_path, "w") as f:
             f.write(users_json)
+
+    def get_by_id(self, uid: str) -> User:
+        current_users = self.get_all()
+        for u in current_users:
+            if u.id == uuid.UUID(hex=uid):
+                assets = AssetRepo().get_for_user(u)
+                return User(uuid=u.id, username=u.username, stocks=assets)
