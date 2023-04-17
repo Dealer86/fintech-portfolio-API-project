@@ -37,3 +37,11 @@ class UserPersistenceFile(UserPersistenceInterface):
             if u.id == uuid.UUID(hex=uid):
                 assets = AssetRepo().get_for_user(u)
                 return User(uuid=u.id, username=u.username, stocks=assets)
+
+    def delete_by_id(self, uid: str):
+        current_users = self.get_all()
+        current_users_without_id = [u for u in current_users if u.id != uuid.UUID(hex=uid)]
+        users_info = [(str(x.id), x.username, x.stocks) for x in current_users_without_id]
+        json_current_users = json.dumps(users_info)
+        with open(self.__file_path, "w") as f:
+            f.write(json_current_users)

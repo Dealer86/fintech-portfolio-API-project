@@ -12,8 +12,8 @@ users_router = APIRouter(prefix="/users")
 
 
 def get_user_repo() -> UserRepo:
-    # user_persistence = UserPersistenceFile("main_users.json")
-    user_persistence = UserPersistenceSqlite()
+    user_persistence = UserPersistenceFile("main_users.json")
+    # user_persistence = UserPersistenceSqlite()
     return UserRepo(user_persistence)
 
 
@@ -25,6 +25,11 @@ def get_all_users(repo=Depends(get_user_repo)):
 @users_router.get("/{user_id}", response_model=UserInfo)
 def get_user(user_id: str, repo=Depends(get_user_repo)):
     return repo.get_by_id(user_id)
+
+
+@users_router.delete("/{user_id}")
+def delete_user(user_id: str, repo=Depends(get_user_repo)):
+    repo.delete_by_id(user_id)
 
 
 @users_router.post("", response_model=UserInfo)

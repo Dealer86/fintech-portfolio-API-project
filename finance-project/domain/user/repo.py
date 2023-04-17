@@ -27,6 +27,10 @@ class UserRepo:
         self.__check_we_have_users()
         return self.__persistence.get_by_id(uid)
 
+    def delete_by_id(self, uid: str):
+        self.__check_we_have_users()
+        self.__persistence.delete_by_id(uid)
+
     def __check_we_have_users(self):
         if self.__users is None:
             self.__users = self.__persistence.get_all()
