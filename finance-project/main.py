@@ -39,12 +39,12 @@ def return_invalid_username(_: Request, e: InvalidUsername):
 
 @app.exception_handler(NonExistentUserId)
 def return_invalid_id(_: Request, e: NonExistentUserId):
-    return JSONResponse(status_code=400, content="Id is not valid! Error: " + str(e))
+    return JSONResponse(status_code=404, content="Id is not valid! Error: " + str(e))
 
 
-@app.exception_handler(InvalidTicker)
-def return_invalid_ticker(_: Request, e: InvalidTicker):
-    return JSONResponse(status_code=404, content=str(e))
+# @app.exception_handler(InvalidTicker)
+# def return_invalid_ticker(_: Request, e: InvalidTicker):
+#     return JSONResponse(status_code=404, content=str(e))
 
 
 @app.on_event("startup")
