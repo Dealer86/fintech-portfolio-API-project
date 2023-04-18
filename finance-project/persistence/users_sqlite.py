@@ -4,6 +4,10 @@ from domain.user.user import User
 from domain.user.factory import UserFactory
 
 
+class NonExistentUserId(Exception):
+    pass
+
+
 class UserPersistenceSqlite(UserPersistenceInterface):
     def get_all(self) -> list[User]:
         with sqlite3.connect("main_users.db") as conn:
@@ -38,3 +42,28 @@ class UserPersistenceSqlite(UserPersistenceInterface):
                     f"INSERT INTO users (id, username) VALUES ('{user.id}', '{user.username}')"
                 )
             conn.commit()
+
+    def get_by_id(self, uid: str) -> User:
+        with sqlite3.connect("main_users.db") as conn:
+            cursor = conn.cursor()
+            cursor.execute(f"SELECT * FROM users WHERE id='{uid}'")
+
+            user_info = cursor.fetchone()
+            if not user_info:
+                raise NonExistentUserId(f"No user found with ID '{uid}'")
+
+            factory = UserFactory()
+            user = factory.make_from_persistence(user_info)
+
+            return user
+
+    def delete_by_id(self, uid: str):
+        with sqlite3.connect("main_users.db") as conn:
+            cursor = conn.cursor()
+            cursor.execute(f"SELECT id FROM users WHERE id='{uid}'")
+            result = cursor.fetchone()
+            if result is None:
+                raise NonExistentUserId(f"No user found with ID '{uid}'")
+            cursor.execute(f"DELETE FROM users WHERE id = '{uid}'")
+            conn.commit()
+
