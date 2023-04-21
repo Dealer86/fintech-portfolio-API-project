@@ -23,7 +23,7 @@ app = FastAPI(
     title="Fintech Portfolio API",
     description="A webserver with a REST API for keeping track of your different financial assets,"
     " stocks & crypto, and see/compare their evolution",
-    version="0.3.0",
+    version="0.3.1",
 )
 
 app.include_router(users_router)
