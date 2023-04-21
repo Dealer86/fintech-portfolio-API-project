@@ -42,10 +42,10 @@ class AssetInfoPrice(AssetInfoBase):
     current_price: float = Field(description="Current price of a stock or security")
     currency: str
     today_low_price: float = Field(
-        description="Highest price at which a stock or security traded"
+        description="Lowest price at which a stock or security traded"
     )
     today_high_price: float = Field(
-        description="Lowest price at which a stock or security traded"
+        description="Highest price at which a stock or security traded"
     )
     open_price: float = Field(
         description="Price at which a stock or security begins trading"
