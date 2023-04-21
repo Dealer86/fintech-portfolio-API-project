@@ -23,7 +23,7 @@ app = FastAPI(
     title="Fintech Portfolio API",
     description="A webserver with a REST API for keeping track of your different financial assets,"
     " stocks & crypto, and see/compare their evolution",
-    version="0.3.0",
+    version="0.3.1",
 )
 
 app.include_router(users_router)
@@ -42,9 +42,9 @@ def return_invalid_id(_: Request, e: NonExistentUserId):
     return JSONResponse(status_code=404, content="Id is not valid! Error: " + str(e))
 
 
-# @app.exception_handler(InvalidTicker)
-# def return_invalid_ticker(_: Request, e: InvalidTicker):
-#     return JSONResponse(status_code=404, content=str(e))
+@app.exception_handler(InvalidTicker)
+def return_invalid_ticker(_: Request, e: InvalidTicker):
+    return JSONResponse(status_code=404, content=str(e))
 
 
 @app.on_event("startup")

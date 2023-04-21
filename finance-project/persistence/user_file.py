@@ -6,6 +6,7 @@ from domain.asset.repo import AssetRepo
 from domain.user.factory import UserFactory
 from domain.user.persistance_interface import UserPersistenceInterface
 from domain.user.user import User
+from persistence.users_sqlite import NonExistentUserId
 
 
 class UserPersistenceFile(UserPersistenceInterface):
@@ -33,6 +34,10 @@ class UserPersistenceFile(UserPersistenceInterface):
 
     def get_by_id(self, uid: str) -> User:
         current_users = self.get_all()
+        correct_id = [u for u in current_users if str(u.id) == uid]
+        if not correct_id:
+            raise NonExistentUserId(f"No user found with ID '{uid}'")
+
         for u in current_users:
             if u.id == uuid.UUID(hex=uid):
                 assets = AssetRepo().get_for_user(u)
@@ -40,8 +45,13 @@ class UserPersistenceFile(UserPersistenceInterface):
 
     def delete_by_id(self, uid: str):
         current_users = self.get_all()
-        current_users_without_id = [u for u in current_users if u.id != uuid.UUID(hex=uid)]
-        users_info = [(str(x.id), x.username, x.stocks) for x in current_users_without_id]
+        try:
+            updated_users_list = [
+                u for u in current_users if u.id != uuid.UUID(hex=uid)
+            ]
+        except ValueError:
+            raise NonExistentUserId(f"No user found with ID '{uid}'")
+        users_info = [(str(x.id), x.username, x.stocks) for x in updated_users_list]
         json_current_users = json.dumps(users_info)
         with open(self.__file_path, "w") as f:
             f.write(json_current_users)

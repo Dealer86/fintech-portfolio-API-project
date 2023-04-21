@@ -15,13 +15,14 @@ class UserAdd(BaseModel):
 
 class AssetAdd(BaseModel):
     ticker: str = Field(
-        description="A ticker is a unique series of letters that represents a specific company's stock or security."
+        description="Ticker for asset is a unique series of letters that represents"
+        " a specific company's stock or security, for example Apple Inc. has 'AAPL'"
     )
 
 
 class AssetInfoBase(OrmModel):
     ticker: str = Field(
-        description="A ticker is a unique series of letters that represents a specific company's stock or security."
+        description="A ticker is a unique series of letters that represents a specific company's stock or security"
     )
     name: str = Field(
         description="Represents the name of a specific company based on the ticker given"
@@ -39,7 +40,9 @@ class AssetInfoUser(AssetInfoBase):
 
 
 class AssetInfoPrice(AssetInfoBase):
-    current_price: float = Field(description="Current price of a stock or security")
+    current_price: float = Field(
+        description="Current price of a stock or security, updated in real time"
+    )
     currency: str
     today_low_price: float = Field(
         description="Lowest price at which a stock or security traded"
@@ -51,7 +54,7 @@ class AssetInfoPrice(AssetInfoBase):
         description="Price at which a stock or security begins trading"
     )
     closed_price: float = Field(
-        description="Last recorded price of a stock or security"
+        description="Yesterday's last recorded price of a stock or security"
     )
     fifty_day_price: float = Field(description="Average price for fifty days")
     percentage_difference_between_closed_and_current_price: str = Field(
