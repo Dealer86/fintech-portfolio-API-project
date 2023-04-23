@@ -10,7 +10,7 @@ from api.assets import assets_router
 from starlette.responses import JSONResponse
 
 from domain.exceptions import InvalidUsername, InvalidTicker
-from persistence.users_sqlite import NonExistentUserId
+from persistence.exceptions import NonExistentUserId
 
 logging.basicConfig(
     filename="finance.log",
@@ -23,7 +23,7 @@ app = FastAPI(
     title="Fintech Portfolio API",
     description="A webserver with a REST API for keeping track of your different financial assets,"
     " stocks & crypto, and see/compare their evolution",
-    version="0.3.2",
+    version="0.3.3",
 )
 
 app.include_router(users_router)

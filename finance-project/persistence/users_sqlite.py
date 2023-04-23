@@ -2,10 +2,7 @@ import sqlite3
 from domain.user.persistance_interface import UserPersistenceInterface
 from domain.user.user import User
 from domain.user.factory import UserFactory
-
-
-class NonExistentUserId(Exception):
-    pass
+from persistence.exceptions import NonExistentUserId
 
 
 class UserPersistenceSqlite(UserPersistenceInterface):
@@ -66,4 +63,3 @@ class UserPersistenceSqlite(UserPersistenceInterface):
                 raise NonExistentUserId(f"No user found with ID '{uid}'")
             cursor.execute(f"DELETE FROM users WHERE id = '{uid}'")
             conn.commit()
-

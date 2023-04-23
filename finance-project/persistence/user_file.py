@@ -6,7 +6,7 @@ from domain.asset.repo import AssetRepo
 from domain.user.factory import UserFactory
 from domain.user.persistance_interface import UserPersistenceInterface
 from domain.user.user import User
-from persistence.users_sqlite import NonExistentUserId
+from persistence.exceptions import NonExistentUserId
 
 
 class UserPersistenceFile(UserPersistenceInterface):
