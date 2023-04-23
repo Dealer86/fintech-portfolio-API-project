@@ -1,19 +1,18 @@
 from fastapi import APIRouter, Depends
 
+from configuration.config import set_persistence_type
 from domain.asset.factory import AssetFactory
 from domain.asset.repo import AssetRepo
 from domain.user.repo import UserRepo
 from domain.user.factory import UserFactory
 from api.models import UserAdd, UserInfo, AssetInfoUser, AssetAdd
-from persistence.user_file import UserPersistenceFile
-from persistence.users_sqlite import UserPersistenceSqlite
+
 
 users_router = APIRouter(prefix="/users")
 
 
 def get_user_repo() -> UserRepo:
-    user_persistence = UserPersistenceFile("main_users.json")
-    # user_persistence = UserPersistenceSqlite()
+    user_persistence = set_persistence_type("config.json")
     return UserRepo(user_persistence)
 
 
