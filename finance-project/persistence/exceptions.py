@@ -1,0 +1,2 @@
+class NonExistentUserId(Exception):
+    pass

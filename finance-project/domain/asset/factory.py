@@ -1,9 +1,6 @@
 import yahooquery
 from domain.asset.asset import Asset
-
-
-class InvalidTicker(Exception):
-    pass
+from domain.exceptions import InvalidTicker
 
 
 class AssetFactory:

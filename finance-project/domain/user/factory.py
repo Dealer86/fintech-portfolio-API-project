@@ -1,10 +1,7 @@
 import uuid
 
+from domain.exceptions import InvalidUsername
 from domain.user.user import User
-
-
-class InvalidUsername(Exception):
-    pass
 
 
 class UserFactory:
