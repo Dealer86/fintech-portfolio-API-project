@@ -17,9 +17,10 @@ class User:
     def username(self) -> str:
         return self.__username
 
+    @username.setter
+    def username(self, new_username):
+        self.__username = new_username
+
     @property
     def stocks(self) -> list[Asset]:
         return self.__stocks
-
-    def add_stock(self, stock: Asset):
-        self.__stocks.append(stock)
