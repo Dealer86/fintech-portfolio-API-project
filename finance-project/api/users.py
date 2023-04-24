@@ -28,7 +28,13 @@ def get_user(user_id: str, repo=Depends(get_user_repo)):
 
 @users_router.delete("/{user_id}")
 def delete_user(user_id: str, repo=Depends(get_user_repo)):
-    repo.delete_by_id(user_id)
+    repo.delete(user_id)
+
+
+@users_router.put("/{user_id}", response_model=UserInfo)
+def update_user(user_id: str, username: str, repo=Depends(get_user_repo)):
+    repo.update(user_id, username)
+    return repo.get_by_id(user_id)
 
 
 @users_router.post("", response_model=UserInfo)
