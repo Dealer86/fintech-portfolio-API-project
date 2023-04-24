@@ -54,7 +54,7 @@ class UserPersistenceSqlite(UserPersistenceInterface):
 
             return user
 
-    def delete_by_id(self, uid: str):
+    def delete(self, uid: str):
         with sqlite3.connect("main_users.db") as conn:
             cursor = conn.cursor()
             cursor.execute(f"SELECT id FROM users WHERE id='{uid}'")
@@ -63,3 +63,6 @@ class UserPersistenceSqlite(UserPersistenceInterface):
                 raise NonExistentUserId(f"No user found with ID '{uid}'")
             cursor.execute(f"DELETE FROM users WHERE id = '{uid}'")
             conn.commit()
+
+    def update(self, user_id: str, new_username: str):
+        pass
