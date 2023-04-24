@@ -20,8 +20,9 @@ class UserPersistenceFile(UserPersistenceInterface):
             users_info = json.loads(contents)
             factory = UserFactory()
             return [factory.make_from_persistence(x) for x in users_info]
+
         except Exception as e:
-            logging.warning("Could not read file, reason: " + str(e))
+            logging.error("Could not read file, reason: " + str(e))
             return []
 
     def add(self, user: User):
@@ -41,9 +42,10 @@ class UserPersistenceFile(UserPersistenceInterface):
         for u in current_users:
             if u.id == uuid.UUID(hex=uid):
                 assets = AssetRepo().get_for_user(u)
+
                 return User(uuid=u.id, username=u.username, stocks=assets)
 
-    def delete_by_id(self, uid: str):
+    def delete(self, uid: str):
         current_users = self.get_all()
         try:
             updated_users_list = [
@@ -55,3 +57,14 @@ class UserPersistenceFile(UserPersistenceInterface):
         json_current_users = json.dumps(users_info)
         with open(self.__file_path, "w") as f:
             f.write(json_current_users)
+
+    def update(self, user_id: str, new_username: str):
+        current_users = self.get_all()
+        for user in current_users:
+            if user.id == uuid.UUID(hex=user_id):
+                user.username = new_username
+                break
+        users_info = [(str(u.id), u.username, u.stocks) for u in current_users]
+        users_json = json.dumps(users_info)
+        with open(self.__file_path, "w") as f:
+            f.write(users_json)
