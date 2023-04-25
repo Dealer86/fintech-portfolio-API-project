@@ -12,7 +12,7 @@ users_router = APIRouter(prefix="/users")
 
 
 def get_user_repo() -> UserRepo:
-    user_persistence = set_persistence_type("config.json")
+    user_persistence = set_persistence_type("configuration/config.json")
     return UserRepo(user_persistence)
 
 
