@@ -1,8 +1,14 @@
+import logging
 import sqlite3
 from domain.user.persistance_interface import UserPersistenceInterface
 from domain.user.user import User
 from domain.user.factory import UserFactory
-from persistence.exceptions import NonExistentUserId
+
+logging.basicConfig(
+    filename="finance.log",
+    level=logging.DEBUG,
+    format="%(asctime)s _ %(levelname)s _ %(name)s _ %(message)s",
+)
 
 
 class UserPersistenceSqlite(UserPersistenceInterface):
@@ -13,6 +19,7 @@ class UserPersistenceSqlite(UserPersistenceInterface):
                 cursor.execute("SELECT * FROM users")
             except sqlite3.OperationalError as e:
                 if "no such table" in str(e):
+                    logging.warning(f"No users found into database, error: {str(e)}")
                     return []
                 else:
                     raise e
@@ -28,12 +35,18 @@ class UserPersistenceSqlite(UserPersistenceInterface):
                 cursor.execute(
                     f"INSERT INTO users (id, username) VALUES ('{user.id}', '{user.username}')"
                 )
+                logging.info(
+                    f"Successfully added user with id {user.id} and {user.username} into database"
+                )
             except sqlite3.OperationalError as e:
                 if "no such table: users" in str(e):
                     cursor.execute(
                         "CREATE TABLE users (id TEXT PRIMARY KEY, username TEXT NOT NULL)"
                     )
                 else:
+                    logging.error(
+                        f"Could not create new table into database: " + str(e)
+                    )
                     raise e
                 cursor.execute(
                     f"INSERT INTO users (id, username) VALUES ('{user.id}', '{user.username}')"
@@ -43,26 +56,37 @@ class UserPersistenceSqlite(UserPersistenceInterface):
     def get_by_id(self, uid: str) -> User:
         with sqlite3.connect("main_users.db") as conn:
             cursor = conn.cursor()
-            cursor.execute(f"SELECT * FROM users WHERE id='{uid}'")
-
+            try:
+                cursor.execute(f"SELECT * FROM users WHERE id='{uid}'")
+            except sqlite3.OperationalError as e:
+                logging.error(
+                    f"Could not retrieve info from database, error: " + str(e)
+                )
+                raise e
             user_info = cursor.fetchone()
-            if not user_info:
-                raise NonExistentUserId(f"No user found with ID '{uid}'")
-
             factory = UserFactory()
-            user = factory.make_from_persistence(user_info)
 
+            user = factory.make_from_persistence(user_info)
             return user
 
     def delete(self, uid: str):
         with sqlite3.connect("main_users.db") as conn:
             cursor = conn.cursor()
-            cursor.execute(f"SELECT id FROM users WHERE id='{uid}'")
-            result = cursor.fetchone()
-            if result is None:
-                raise NonExistentUserId(f"No user found with ID '{uid}'")
-            cursor.execute(f"DELETE FROM users WHERE id = '{uid}'")
+            try:
+                cursor.execute(f"DELETE FROM users WHERE id = '{uid}'")
+            except sqlite3.OperationalError as e:
+                logging.error(f"Could not delete from database, error:  " + str(e))
+                raise e
             conn.commit()
 
     def update(self, user_id: str, new_username: str):
-        pass
+        with sqlite3.connect("main_users.db") as conn:
+            cursor = conn.cursor()
+            try:
+                cursor.execute(
+                    f"UPDATE users SET (username)='{new_username}' WHERE id='{user_id}'"
+                )
+            except sqlite3.OperationalError as e:
+                logging.error("Could not update database, reason: " + str(e))
+                raise e
+            conn.commit()
