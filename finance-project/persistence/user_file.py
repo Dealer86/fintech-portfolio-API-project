@@ -6,7 +6,17 @@ from domain.asset.repo import AssetRepo
 from domain.user.factory import UserFactory
 from domain.user.persistance_interface import UserPersistenceInterface
 from domain.user.user import User
-from persistence.exceptions import NonExistentUserId
+
+
+class FailToWriteToFile(Exception):
+    pass
+
+
+logging.basicConfig(
+    filename="finance.log",
+    level=logging.DEBUG,
+    format="%(asctime)s _ %(levelname)s _ %(name)s _ %(message)s",
+)
 
 
 class UserPersistenceFile(UserPersistenceInterface):
@@ -30,15 +40,14 @@ class UserPersistenceFile(UserPersistenceInterface):
         current_users.append(user)
         users_info = [(str(x.id), x.username, x.stocks) for x in current_users]
         users_json = json.dumps(users_info)
-        with open(self.__file_path, "w") as f:
-            f.write(users_json)
+        try:
+            with open(self.__file_path, "w") as f:
+                f.write(users_json)
+        except FailToWriteToFile as e:
+            logging.error("Could not write file. Error: " + str(e))
 
     def get_by_id(self, uid: str) -> User:
         current_users = self.get_all()
-        correct_id = [u for u in current_users if str(u.id) == uid]
-        if not correct_id:
-            raise NonExistentUserId(f"No user found with ID '{uid}'")
-
         for u in current_users:
             if u.id == uuid.UUID(hex=uid):
                 assets = AssetRepo().get_for_user(u)
@@ -47,16 +56,14 @@ class UserPersistenceFile(UserPersistenceInterface):
 
     def delete(self, uid: str):
         current_users = self.get_all()
-        try:
-            updated_users_list = [
-                u for u in current_users if u.id != uuid.UUID(hex=uid)
-            ]
-        except ValueError:
-            raise NonExistentUserId(f"No user found with ID '{uid}'")
+        updated_users_list = [u for u in current_users if u.id != uuid.UUID(hex=uid)]
         users_info = [(str(x.id), x.username, x.stocks) for x in updated_users_list]
         json_current_users = json.dumps(users_info)
-        with open(self.__file_path, "w") as f:
-            f.write(json_current_users)
+        try:
+            with open(self.__file_path, "w") as f:
+                f.write(json_current_users)
+        except FailToWriteToFile as e:
+            logging.error("Could not delete from file. Error: " + str(e))
 
     def update(self, user_id: str, new_username: str):
         current_users = self.get_all()
@@ -66,5 +73,8 @@ class UserPersistenceFile(UserPersistenceInterface):
                 break
         users_info = [(str(u.id), u.username, u.stocks) for u in current_users]
         users_json = json.dumps(users_info)
-        with open(self.__file_path, "w") as f:
-            f.write(users_json)
+        try:
+            with open(self.__file_path, "w") as f:
+                f.write(users_json)
+        except FailToWriteToFile as e:
+            logging.error("Could not update file. Error: " + str(e))
