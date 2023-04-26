@@ -1,5 +1,7 @@
+import logging
 import sqlite3
 from domain.asset.asset import Asset
+from domain.exceptions import DuplicateAsset
 from domain.user.user import User
 
 
@@ -14,21 +16,26 @@ class AssetRepo:
                     f"VALUES ('{asset.ticker}', '{asset.name}', "
                     f"'{asset.country}', {asset.units})"
                 )
-            except Exception as e:
-                print("Failed to add asset" +str(e))
-                cursor.execute(
-                    f"CREATE TABLE '{table}'"
-                    f" (ticker TEXT PRIMARY KEY,"
-                    f" name TEXT,"
-                    f" country TEXT,"
-                    f" units REAL)"
+                logging.info(
+                    f"Successfully added asset {asset.ticker} to user {user.username}"
                 )
-                cursor.execute(
-                    f"INSERT INTO '{table}' (ticker, name, country, units)"
-                    f"VALUES ('{asset.ticker}', '{asset.name}', "
-                    f"'{asset.country}', {asset.units})"
-                )
-            conn.commit()
+            except sqlite3.IntegrityError:
+                raise DuplicateAsset(f"Asset <{asset.ticker}> already in database! ")
+            except sqlite3.OperationalError as e:
+                if "no such table" in str(e):
+                    cursor.execute(
+                        f"CREATE TABLE '{table}'"
+                        f" (ticker TEXT PRIMARY KEY,"
+                        f" name TEXT,"
+                        f" country TEXT,"
+                        f" units REAL)"
+                    )
+                    cursor.execute(
+                        f"INSERT INTO '{table}' (ticker, name, country, units)"
+                        f"VALUES ('{asset.ticker}', '{asset.name}', "
+                        f"'{asset.country}', {asset.units})"
+                    )
+                conn.commit()
 
     def get_for_user(self, user: User) -> list[Asset]:
         table = f"{user.id}-assets".replace("-", "_")
