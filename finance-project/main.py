@@ -9,8 +9,14 @@ from api.assets import assets_router
 
 from starlette.responses import JSONResponse
 
-from domain.exceptions import InvalidUsername, InvalidTicker
-from persistence.exceptions import NonExistentUserId
+
+from domain.exceptions import (
+    InvalidUsername,
+    InvalidTicker,
+    NonExistentUserId,
+    DuplicateUser,
+    DuplicateAsset,
+)
 
 logging.basicConfig(
     filename="finance.log",
@@ -21,9 +27,9 @@ logging.basicConfig(
 app = FastAPI(
     debug=True,
     title="Fintech Portfolio API",
-    description="A webserver with a REST API for keeping track of your different financial assets,"
-    " stocks & crypto, and see/compare their evolution",
-    version="0.4.0",
+    description="The Fintech Portfolio API is a web server with a REST API that allows you to keep track"
+    " of your different financial assets and compare their evolution over time.",
+    version="0.5.0",
 )
 
 app.include_router(users_router)
@@ -39,7 +45,7 @@ def return_invalid_username(_: Request, e: InvalidUsername):
 
 @app.exception_handler(NonExistentUserId)
 def return_invalid_id(_: Request, e: NonExistentUserId):
-    invalid_id_error = "Id is not valid! Error: " + str(e)
+    invalid_id_error = str(e)
     logging.error(invalid_id_error)
     return JSONResponse(status_code=404, content=invalid_id_error)
 
@@ -48,6 +54,18 @@ def return_invalid_id(_: Request, e: NonExistentUserId):
 def return_invalid_ticker(_: Request, e: InvalidTicker):
     logging.error(str(e))
     return JSONResponse(status_code=404, content=str(e))
+
+
+@app.exception_handler(DuplicateAsset)
+def return_duplicate_asset(_: Request, e: DuplicateAsset):
+    logging.error(str(e))
+    return JSONResponse(status_code=409, content=str(e))
+
+
+@app.exception_handler(DuplicateUser)
+def return_duplicate_user(_: Request, e: DuplicateUser):
+    logging.warning(str(e))
+    return JSONResponse(status_code=409, content=str(e))
 
 
 @app.on_event("startup")
