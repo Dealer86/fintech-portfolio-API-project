@@ -6,11 +6,13 @@ from domain.exceptions import InvalidTicker
 class AssetFactory:
     def make_new(self, ticker: str) -> Asset:
         t = yahooquery.Ticker(ticker)
+
         profile = t.summary_profile[ticker]
-        try:
-            name = self.__extract_name(profile)
-        except TypeError:
-            raise InvalidTicker("Invalid ticker")
+        if type(profile) not in [dict]:
+            raise InvalidTicker(f"Invalid ticker {ticker}")
+
+        name = self.__extract_name(profile)
+
         country = profile["country"]
         sector = profile["sector"]
         return Asset(
