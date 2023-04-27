@@ -1,5 +1,7 @@
 import unittest
 import uuid
+
+from domain.asset.asset import Asset
 from domain.user.user import User
 
 
@@ -26,33 +28,24 @@ class UserMyTestCase(unittest.TestCase):
     def test_it_sets_the_stocks_we_give(self):
         id_ = uuid.uuid4()
         username = "random-name"
-        stock_list = ["first", "second", "third"]
 
-        user = User(id_, username, stock_list)
+        actual_asset = [
+            Asset(country="romania", ticker="aapl", nr=0, name="Apple", sector="Tech")
+        ]
+
+        user = User(id_, username, actual_asset)
 
         actual = user.stocks
 
-        self.assertEqual(stock_list, actual)
+        self.assertEqual(actual_asset, actual)
 
     def test_it_sets_the_id(self):
         id_ = uuid.uuid4()
-        user1 = User(id_, "random-user1")
+        user1 = User(id_, "random-user")
 
         actual_id_user1 = user1.id
 
-        self.assertIsNotNone(actual_id_user1)
-
-        self.assertIsInstance(actual_id_user1, type(id_))
-
-    def test_id_consistency(self):
-        # create two User objects with different UUIDs
-        id1 = uuid.uuid4()
-        id2 = uuid.uuid4()
-        user1 = User(id1, 'test_user1')
-        user2 = User(id2, 'test_user2')
-
-        # check that both users have different ids
-        self.assertNotEqual(user1.id, user2.id)
+        self.assertEqual(actual_id_user1, id_)
 
 
 if __name__ == "__main__":
