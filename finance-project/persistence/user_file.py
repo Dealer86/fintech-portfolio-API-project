@@ -32,7 +32,10 @@ class UserPersistenceFile(UserPersistenceInterface):
             return [factory.make_from_persistence(x) for x in users_info]
 
         except Exception as e:
-            logging.error("Could not read file, reason: " + str(e))
+            logging.error(
+                "Could not read file because it not exists, will return empty list, reason: "
+                + str(e)
+            )
             return []
 
     def add(self, user: User):
