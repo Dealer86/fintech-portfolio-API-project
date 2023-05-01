@@ -1,5 +1,8 @@
+import logging
+
 from fastapi import APIRouter, Depends
 
+from configuration.asset_config import set_asset_persistence_type
 from configuration.config import set_persistence_type
 from domain.asset.factory import AssetFactory
 from domain.asset.repo import AssetRepo
@@ -9,6 +12,11 @@ from api.models import UserAdd, UserInfo, AssetInfoUser, AssetAdd
 
 
 users_router = APIRouter(prefix="/users")
+
+
+def get_asset_repo() -> AssetRepo:
+    asset_persistence = set_asset_persistence_type("configuration/config.json")
+    return AssetRepo(asset_persistence)
 
 
 def get_user_repo() -> UserRepo:
@@ -40,16 +48,24 @@ def update_user(user_id: str, username: str, repo=Depends(get_user_repo)):
 
 @users_router.post("", response_model=UserInfo)
 def create_a_user(new_user: UserAdd, repo=Depends(get_user_repo)):
+    logging.info("Creating a user...")
     user = UserFactory().make_new(new_user.username)
-    repo.add(user)
+    try:
+        repo.add(user)
+        logging.info(f"Successfully created user {user.username}")
+    except Exception as e:
+        logging.error("Error could not create a user. Reason: " + str(e))
     return user
 
 
 @users_router.post("/{user_id}/assets", response_model=AssetInfoUser)
-def add_asset_to_user(user_id: str, asset: AssetAdd, repo=Depends(get_user_repo)):
+def add_asset_to_user(
+    user_id: str,
+    asset: AssetAdd,
+    repo=Depends(get_user_repo),
+    asset_repo=Depends(get_asset_repo),
+):
     new_asset = AssetFactory().make_new(asset.ticker)
-    # TODO homework, if asset exception throw 400/404
     user = repo.get_by_id(user_id)
-    # TODO homework, check we have a user otherwise throw exception code 404
-    AssetRepo().add_to_user(user, new_asset)
+    asset_repo.add_to_user(user, new_asset)
     return new_asset
