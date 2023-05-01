@@ -1,56 +1,25 @@
 import logging
 import sqlite3
 from domain.asset.asset import Asset
-from domain.exceptions import DuplicateAsset
+from domain.asset.persistence_interface import AssetPersistenceInterface
+
 from domain.user.user import User
 
 
 class AssetRepo:
+    def __init__(self, persistence: AssetPersistenceInterface):
+        self.__persistence = persistence
+        self.__assets = None
+
     def add_to_user(self, user: User, asset: Asset):
-        table = f"{user.id}-assets".replace("-", "_")
-        with sqlite3.connect(f"main_users.db") as conn:
-            cursor = conn.cursor()
-            try:
-                cursor.execute(
-                    f"INSERT INTO '{table}' (ticker, name, country, units)"
-                    f"VALUES ('{asset.ticker}', '{asset.name}', "
-                    f"'{asset.country}', {asset.units})"
-                )
-                logging.info(
-                    f"Successfully added asset {asset.ticker} to user {user.username}"
-                )
-            except sqlite3.IntegrityError:
-                raise DuplicateAsset(f"Asset <{asset.ticker}> already in database! ")
-            except sqlite3.OperationalError as e:
-                if "no such table" in str(e):
-                    cursor.execute(
-                        f"CREATE TABLE '{table}'"
-                        f" (ticker TEXT PRIMARY KEY,"
-                        f" name TEXT,"
-                        f" country TEXT,"
-                        f" units REAL)"
-                    )
-                    cursor.execute(
-                        f"INSERT INTO '{table}' (ticker, name, country, units)"
-                        f"VALUES ('{asset.ticker}', '{asset.name}', "
-                        f"'{asset.country}', {asset.units})"
-                    )
-                conn.commit()
+        self.__check_we_have_assets(user)
+        self.__persistence.add_to_user(user, asset)
+        self.__assets.append([user, asset])
 
     def get_for_user(self, user: User) -> list[Asset]:
-        table = f"{user.id}-assets".replace("-", "_")
-        with sqlite3.connect(f"main_users.db") as conn:
-            cursor = conn.cursor()
-            try:
-                cursor.execute(f"SELECT * FROM '{table}'")
-            except sqlite3.OperationalError as e:
-                if "no such table" in str(e):
-                    return []
-                else:
-                    raise e
-            assets_info = cursor.fetchall()
-        assets = [
-            Asset(ticker=x[0], nr=x[3], name=x[1], country=x[2], sector="sec")
-            for x in assets_info
-        ]
-        return assets
+        self.__check_we_have_assets(user)
+        return self.__assets
+
+    def __check_we_have_assets(self, user: User):
+        if self.__assets is None:
+            self.__assets = self.__persistence.get_for_user(user)
