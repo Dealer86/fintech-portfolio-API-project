@@ -1,14 +1,9 @@
 import logging
 import sqlite3
-from domain.user.persistance_interface import UserPersistenceInterface
+
+from domain.user.persistence_interface import UserPersistenceInterface
 from domain.user.user import User
 from domain.user.factory import UserFactory
-
-logging.basicConfig(
-    filename="finance.log",
-    level=logging.DEBUG,
-    format="%(asctime)s _ %(levelname)s _ %(name)s _ %(message)s",
-)
 
 
 class UserPersistenceSqlite(UserPersistenceInterface):
