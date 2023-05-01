@@ -3,17 +3,13 @@ import uuid
 
 
 from domain.exceptions import NonExistentUserId, DuplicateUser
+from domain.user.persistence_interface import UserPersistenceInterface
+
 from singleton import singleton
 from domain.asset.repo import AssetRepo
+from configuration.asset_config import set_asset_persistence_type
 
-from domain.user.persistance_interface import UserPersistenceInterface
 from domain.user.user import User
-
-logging.basicConfig(
-    filename="finance.log",
-    level=logging.DEBUG,
-    format="%(asctime)s _ %(levelname)s _ %(name)s _ %(message)s",
-)
 
 
 @singleton
@@ -46,7 +42,10 @@ class UserRepo:
 
         for u in self.__users:
             if u.id == uuid.UUID(hex=uid):
-                assets = AssetRepo().get_for_user(u)
+                asset_persistence = set_asset_persistence_type(
+                    "configuration/config.json"
+                )
+                assets = asset_persistence.get_for_user(u)
                 return User(
                     uuid=u.id,
                     username=u.username,
