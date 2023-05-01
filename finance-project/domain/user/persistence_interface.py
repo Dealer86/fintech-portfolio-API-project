@@ -1,6 +1,5 @@
 import abc
 
-from domain.asset.asset import Asset
 from domain.user.user import User
 
 
