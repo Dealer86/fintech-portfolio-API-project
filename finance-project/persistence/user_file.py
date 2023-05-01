@@ -4,19 +4,12 @@ import uuid
 
 from domain.asset.repo import AssetRepo
 from domain.user.factory import UserFactory
-from domain.user.persistance_interface import UserPersistenceInterface
+from domain.user.persistence_interface import UserPersistenceInterface
 from domain.user.user import User
 
 
 class FailToWriteToFile(Exception):
     pass
-
-
-logging.basicConfig(
-    filename="finance.log",
-    level=logging.DEBUG,
-    format="%(asctime)s _ %(levelname)s _ %(name)s _ %(message)s",
-)
 
 
 class UserPersistenceFile(UserPersistenceInterface):
