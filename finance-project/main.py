@@ -24,12 +24,13 @@ logging.basicConfig(
     format="%(asctime)s _ %(levelname)s _ %(name)s _ %(message)s",
 )
 
+
 app = FastAPI(
     debug=True,
     title="Fintech Portfolio API",
     description="The Fintech Portfolio API is a web server with a REST API that allows you to keep track"
     " of your different financial assets and compare their evolution over time.",
-    version="0.6.0",
+    version="0.6.1",
 )
 
 app.include_router(users_router)
@@ -86,6 +87,6 @@ if __name__ == "__main__":
     try:
         subprocess.run(["uvicorn", "main:app", "--reload"])
     except KeyboardInterrupt as e:
-        logging.warning("Keyboard interrupt." + str(e))
+        logging.warning("Keyboard interrupt.")
     except Exception as e:
         logging.warning("Webserver has stopped. Reason: " + str(e))
