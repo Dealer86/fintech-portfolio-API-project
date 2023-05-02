@@ -48,22 +48,6 @@ class UserPersistenceSqlite(UserPersistenceInterface):
                 )
             conn.commit()
 
-    def get_by_id(self, uid: str) -> User:
-        with sqlite3.connect("main_users.db") as conn:
-            cursor = conn.cursor()
-            try:
-                cursor.execute(f"SELECT * FROM users WHERE id='{uid}'")
-            except sqlite3.OperationalError as e:
-                logging.error(
-                    f"Could not retrieve info from database, error: " + str(e)
-                )
-                raise e
-            user_info = cursor.fetchone()
-            factory = UserFactory()
-
-            user = factory.make_from_persistence(user_info)
-            return user
-
     def delete(self, uid: str):
         with sqlite3.connect("main_users.db") as conn:
             cursor = conn.cursor()
