@@ -42,14 +42,6 @@ class UserPersistenceFile(UserPersistenceInterface):
         except FailToWriteToFile as e:
             logging.error("Could not write file. Error: " + str(e))
 
-    def get_by_id(self, uid: str) -> User:
-        current_users = self.get_all()
-        for u in current_users:
-            if u.id == uuid.UUID(hex=uid):
-                assets = AssetRepo().get_for_user(u)
-
-                return User(uuid=u.id, username=u.username, stocks=assets)
-
     def delete(self, uid: str):
         current_users = self.get_all()
         updated_users_list = [u for u in current_users if u.id != uuid.UUID(hex=uid)]
