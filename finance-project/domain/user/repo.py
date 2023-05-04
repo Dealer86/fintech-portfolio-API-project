@@ -1,7 +1,7 @@
 import logging
 import uuid
 
-
+from domain.asset.persistence_interface import AssetPersistenceInterface
 from domain.exceptions import NonExistentUserId, DuplicateUser
 from domain.user.persistence_interface import UserPersistenceInterface
 
@@ -14,18 +14,20 @@ from domain.user.user import User
 
 @singleton
 class UserRepo:
-    def __init__(self, persistence: UserPersistenceInterface):
+    def __init__(
+        self, persistence: UserPersistenceInterface, asset: AssetPersistenceInterface
+    ):
         print("Initializing user repo")
         self.__persistence = persistence
         self.__users = None
+        self.__asset = asset
 
     def add(self, new_user: User):
         self.__check_we_have_users()
-        for u in self.__users:
-            if u.username == new_user.username:
-                raise DuplicateUser(
-                    f"User {new_user.username} already exists, try another username"
-                )
+        if new_user.username in [u.username for u in self.__users]:
+            raise DuplicateUser(
+                f"User {new_user.username} already exists, try another username"
+            )
 
         self.__persistence.add(new_user)
 
@@ -42,10 +44,8 @@ class UserRepo:
 
         for u in self.__users:
             if u.id == uuid.UUID(hex=uid):
-                asset_persistence = set_asset_persistence_type(
-                    "configuration/config.json"
-                )
-                assets = asset_persistence.get_for_user(u)
+                assets = self.__asset.get_for_user(u)
+
                 return User(
                     uuid=u.id,
                     username=u.username,
