@@ -6,6 +6,7 @@ from configuration.asset_config import set_asset_persistence_type
 from configuration.config import set_persistence_type
 from domain.asset.factory import AssetFactory
 from domain.asset.repo import AssetRepo
+from domain.exceptions import DuplicateUser, DuplicateAsset, NonExistentUserId
 from domain.user.repo import UserRepo
 from domain.user.factory import UserFactory
 from api.models import UserAdd, UserInfo, AssetInfoUser, AssetAdd
@@ -21,7 +22,8 @@ def get_asset_repo() -> AssetRepo:
 
 def get_user_repo() -> UserRepo:
     user_persistence = set_persistence_type("configuration/config.json")
-    return UserRepo(user_persistence)
+    asset_persistence = set_asset_persistence_type("configuration/config.json")
+    return UserRepo(user_persistence, asset_persistence)
 
 
 @users_router.get("", response_model=list[UserInfo])
@@ -53,6 +55,8 @@ def create_a_user(new_user: UserAdd, repo=Depends(get_user_repo)):
     try:
         repo.add(user)
         logging.info(f"Successfully created user {user.username}")
+    except DuplicateUser as e:
+        raise e
     except Exception as e:
         logging.error("Error could not create a user. Reason: " + str(e))
     return user
@@ -66,6 +70,14 @@ def add_asset_to_user(
     asset_repo=Depends(get_asset_repo),
 ):
     new_asset = AssetFactory().make_new(asset.ticker)
-    user = repo.get_by_id(user_id)
-    asset_repo.add_to_user(user, new_asset)
+    try:
+        user = repo.get_by_id(user_id)
+        logging.info(f"User {user.username} with id {user_id} found")
+    except NonExistentUserId as e:
+        raise e
+    try:
+        asset_repo.add_to_user(user, new_asset)
+        logging.info(f"Successfully added asset {asset.ticker} to user {user.username}")
+    except DuplicateAsset as e:
+        raise e
     return new_asset
