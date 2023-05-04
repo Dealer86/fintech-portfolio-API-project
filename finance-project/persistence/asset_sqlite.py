@@ -21,8 +21,12 @@ class AssetPersistenceSqlite(AssetPersistenceInterface):
                 logging.info(
                     f"Successfully added asset {asset.ticker} to user {user.username}"
                 )
-            except sqlite3.IntegrityError:
-                raise DuplicateAsset(f"Asset <{asset.ticker}> already in database! ")
+            except sqlite3.IntegrityError as e:
+                if "UNIQUE constraint failed" in str(e):
+                    logging.warning(f"Asset <{asset.ticker}> already in database!")
+                    raise DuplicateAsset(
+                        f"Asset <{asset.ticker}> already in database! "
+                    )
             except sqlite3.OperationalError as e:
                 if "no such table" in str(e):
                     cursor.execute(
