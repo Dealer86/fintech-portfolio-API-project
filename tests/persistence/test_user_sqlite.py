@@ -1,4 +1,3 @@
-import os
 import sqlite3
 import unittest
 
@@ -80,13 +79,14 @@ class TestUserPersistenceSqlite(unittest.TestCase):
         # clean up
         with sqlite3.connect("main_users.db") as conn:
             cursor = conn.cursor()
-            cursor.execute(f"DELETE FROM users WHERE id='{str(user.id)}'")
-            cursor.execute(f"DELETE FROM users WHERE id='{str(user2.id)}'")
+            # cursor.execute(f"DELETE FROM users WHERE id='{str(user.id)}'")
+            # cursor.execute(f"DELETE FROM users WHERE id='{str(user2.id)}'")
+            cursor.execute("DROP TABLE users")
             conn.commit()
 
     # @classmethod
     # def tearDownClass(cls) -> None:
-    #
+    #     import os
     #     os.remove("main_users.db")
 
 
