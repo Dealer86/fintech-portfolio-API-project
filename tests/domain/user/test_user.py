@@ -5,7 +5,7 @@ from domain.asset.asset import Asset
 from domain.user.user import User
 
 
-class UserMyTestCase(unittest.TestCase):
+class UserTestCase(unittest.TestCase):
     def test_user_sets_the_right_username(self):
         # set up
         username = "random-generated"
