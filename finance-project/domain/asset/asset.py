@@ -67,11 +67,11 @@ class Asset:
         if difference > 0:
             return (
                 f"The closed price {self.closed_price} is {percentage_difference:.2f}%"
-                f" higher than the current price {self.current_price}"
+                f" higher than current price {self.current_price}"
             )
         elif difference < 0:
             return (
-                f"The closed {self.closed_price} is {abs(percentage_difference):.2f}%"
-                f" lower than current {self.current_price}"
+                f"The closed price {self.closed_price} is {abs(percentage_difference):.2f}%"
+                f" lower than current price {self.current_price}"
             )
-        return "The values are the same"
+        return "Values are the same"
