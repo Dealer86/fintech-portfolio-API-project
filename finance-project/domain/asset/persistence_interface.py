@@ -14,5 +14,5 @@ class AssetPersistenceInterface(ABC):
         pass
 
     @abstractmethod
-    def delete_for_user(self, user_id: str, asset: Asset):
+    def delete_for_user(self, user_id: str, asset: str):
         pass
