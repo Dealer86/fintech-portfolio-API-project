@@ -3,7 +3,7 @@ import logging
 
 from domain.asset.asset import Asset
 from domain.asset.persistence_interface import AssetPersistenceInterface
-from domain.exceptions import DuplicateAsset
+from domain.exceptions import DuplicateAsset, InvalidUserTable
 from domain.user.user import User
 
 
@@ -12,6 +12,7 @@ class AssetPersistenceSqlite(AssetPersistenceInterface):
         table = f"{user.id}-assets".replace("-", "_")
         with sqlite3.connect(f"main_users.db") as conn:
             cursor = conn.cursor()
+            logging.info(f"Executing add_to_user command for user {user.username}...")
             try:
                 cursor.execute(
                     f"INSERT INTO '{table}' (ticker, name, country, units)"
@@ -29,6 +30,11 @@ class AssetPersistenceSqlite(AssetPersistenceInterface):
                     )
             except sqlite3.OperationalError as e:
                 if "no such table" in str(e):
+                    logging.warning(
+                        f"Failed executing command add_to_user to add asset to user {user.username} list."
+                        f"Reason: " + str(e)
+                    )
+                    logging.info("Creating table...")
                     cursor.execute(
                         f"CREATE TABLE '{table}'"
                         f" (ticker TEXT PRIMARY KEY,"
@@ -36,6 +42,7 @@ class AssetPersistenceSqlite(AssetPersistenceInterface):
                         f" country TEXT,"
                         f" units REAL)"
                     )
+                    logging.info(f"Inserting into {table}")
                     cursor.execute(
                         f"INSERT INTO '{table}' (ticker, name, country, units)"
                         f"VALUES ('{asset.ticker}', '{asset.name}', "
@@ -47,10 +54,19 @@ class AssetPersistenceSqlite(AssetPersistenceInterface):
         table = f"{user.id}-assets".replace("-", "_")
         with sqlite3.connect(f"main_users.db") as conn:
             cursor = conn.cursor()
+            logging.info(f"Executing get_for_user command for user {user.username}...")
             try:
                 cursor.execute(f"SELECT * FROM '{table}'")
+                logging.info(
+                    f"Successfully executed get_for_user command for user {user.username}"
+                )
             except sqlite3.OperationalError as e:
                 if "no such table" in str(e):
+                    logging.warning(
+                        f"Failed executing command get_for_user for getting"
+                        f" assets lists for user {user.username}."
+                        f"Reason: " + str(e)
+                    )
                     return []
                 else:
                     raise e
@@ -60,3 +76,31 @@ class AssetPersistenceSqlite(AssetPersistenceInterface):
             for x in assets_info
         ]
         return assets
+
+    def delete_for_user(self, user_id: str, asset: str):
+        table = f"{user_id}-assets".replace("-", "_")
+        with sqlite3.connect("main_users.db") as conn:
+            cursor = conn.cursor()
+            logging.info(
+                f"Executing delete_for_user command for deleting asset {asset} from user"
+                f" with id {user_id} ..."
+            )
+            try:
+                cursor.execute(f"DELETE FROM '{table}' WHERE ticker = ?", (asset,))
+                logging.info(
+                    f"Successfully executed delete_for_user command for deleting {asset} from"
+                    f" user with id {user_id}"
+                )
+            except sqlite3.OperationalError as e:
+                if "no such table" in str(e):
+                    logging.warning(
+                        f"Could not executed delete_for_user command for deleting"
+                        f" asset {asset} for user with id {user_id}. "
+                        f"Reason: " + str(e)
+                    )
+                    raise InvalidUserTable(
+                        f"Could not delete asset {asset} for user with id {user_id}, "
+                        f"reason: " + str(e)
+                    )
+                else:
+                    raise e
