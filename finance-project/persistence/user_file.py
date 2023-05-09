@@ -1,6 +1,7 @@
 import json
 import logging
 import uuid
+import os
 
 from domain.asset.repo import AssetRepo
 from domain.user.factory import UserFactory
@@ -17,6 +18,8 @@ class UserPersistenceFile(UserPersistenceInterface):
         self.__file_path = file_path
 
     def get_all(self) -> list[User]:
+        if not os.path.exists(self.__file_path):
+            return []
         try:
             with open(self.__file_path) as f:
                 contents = f.read()
@@ -24,7 +27,7 @@ class UserPersistenceFile(UserPersistenceInterface):
             factory = UserFactory()
             return [factory.make_from_persistence(x) for x in users_info]
 
-        except Exception as e:
+        except FailToWriteToFile as e:
             logging.warning(
                 "Could not read file because it not exists, will return empty list, reason: "
                 + str(e)
