@@ -6,11 +6,16 @@ from configuration.asset_config import set_asset_persistence_type
 from configuration.config import set_persistence_type
 from domain.asset.factory import AssetFactory
 from domain.asset.repo import AssetRepo
-from domain.exceptions import DuplicateUser, DuplicateAsset, NonExistentUserId
+from domain.exceptions import (
+    DuplicateUser,
+    DuplicateAsset,
+    NonExistentUserId,
+    InvalidTicker,
+)
 from domain.user.repo import UserRepo
 from domain.user.factory import UserFactory
-from api.models import UserAdd, UserInfo, AssetInfoUser, AssetAdd
-
+from api.models import UserAdd, UserInfo, AssetInfoUser, AssetAdd, AssetInfoBase
+from persistence.asset_file import AssetPersistenceFile
 
 users_router = APIRouter(prefix="/users")
 
@@ -42,9 +47,22 @@ def delete_user(user_id: str, repo=Depends(get_user_repo)):
     return {"status": "ok"}
 
 
+@users_router.delete("/{user_id}/assets")
+def delete_asset_for_user(
+    user_id: str, asset_ticker: str, asset_repo=Depends(get_asset_repo)
+):
+    asset_repo.delete_for_user(user_id, asset_ticker)
+
+
 @users_router.put("/{user_id}", response_model=UserInfo)
 def update_user(user_id: str, username: str, repo=Depends(get_user_repo)):
-    repo.update(user_id, username)
+    logging.info(f"Updating user with id {user_id} with new username {username}...")
+    try:
+        repo.update(user_id, username)
+        logging.info(f"Successfully update user {username} with ID {user_id}")
+    except NonExistentUserId as e:
+        logging.error(str(e))
+        raise e
     return repo.get_by_id(user_id)
 
 
@@ -56,6 +74,7 @@ def create_a_user(new_user: UserAdd, repo=Depends(get_user_repo)):
         repo.add(user)
         logging.info(f"Successfully created user {user.username}")
     except DuplicateUser as e:
+        logging.error(str(e))
         raise e
     except Exception as e:
         logging.error("Error could not create a user. Reason: " + str(e))
@@ -69,15 +88,25 @@ def add_asset_to_user(
     repo=Depends(get_user_repo),
     asset_repo=Depends(get_asset_repo),
 ):
-    new_asset = AssetFactory().make_new(asset.ticker)
+    logging.info("Creating a new asset...")
+    try:
+        new_asset = AssetFactory().make_new(asset.ticker)
+        logging.info(f"Successfully created asset {asset.ticker}")
+    except TypeError:
+        logging.warning(f"Invalid ticker {asset.ticker}")
+        raise InvalidTicker(f"Invalid ticker {asset.ticker}")
+    logging.info(f"Getting user with id {user_id}...")
     try:
         user = repo.get_by_id(user_id)
         logging.info(f"User {user.username} with id {user_id} found")
     except NonExistentUserId as e:
+        logging.error(str(e))
         raise e
+    logging.info(f"Adding asset {asset.ticker} to user {user.username}...")
     try:
         asset_repo.add_to_user(user, new_asset)
         logging.info(f"Successfully added asset {asset.ticker} to user {user.username}")
     except DuplicateAsset as e:
+        logging.error(str(e))
         raise e
     return new_asset
