@@ -8,6 +8,7 @@ class AssetFactory:
         t = yahooquery.Ticker(ticker)
 
         profile = t.summary_profile[ticker]
+
         if type(profile) not in [dict]:
             raise InvalidTicker(f"Invalid ticker {ticker}")
 
