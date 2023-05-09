@@ -16,3 +16,7 @@ class DuplicateUser(Exception):
 
 class DuplicateAsset(Exception):
     pass
+
+
+class InvalidUserTable(Exception):
+    pass
