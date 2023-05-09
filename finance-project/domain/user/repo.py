@@ -23,6 +23,7 @@ class UserRepo:
         self.__asset = asset
 
     def add(self, new_user: User):
+        logging.info("From UserRepo executing add command...")
         self.__check_we_have_users()
         if new_user.username in [u.username for u in self.__users]:
             raise DuplicateUser(
@@ -32,13 +33,15 @@ class UserRepo:
         self.__persistence.add(new_user)
 
         self.__users.append(new_user)
-        logging.info(f"User {new_user.username} was successfully created")
+        logging.info("Add method was successfully executed")
 
     def get_all(self) -> list[User]:
+        logging.info("From UserRepo executing get all command...")
         self.__check_we_have_users()
         return self.__users
 
     def get_by_id(self, uid: str) -> User:
+        logging.info("From UserRepo executing get by id command...")
         self.__check_we_have_users()
         self.__check_id(uid)
 
@@ -53,18 +56,20 @@ class UserRepo:
                 )
 
     def delete(self, uid: str):
+        logging.info("From UserRepo executing delete command...")
         self.__check_we_have_users()
         self.__check_id(uid)
         self.__persistence.delete(uid)
         self.__refresh_cache()
-        logging.info(f"Successfully delete user with ID {uid}")
+        logging.info("Delete method was successfully executed")
 
     def update(self, user_id: str, username: str):
+        logging.info("From UserRepo executing update command...")
         self.__check_we_have_users()
         self.__check_id(user_id)
         self.__persistence.update(user_id, username)
         self.__refresh_cache()
-        logging.info(f"Successfully update user {username} with ID {user_id}")
+        logging.info("Update method was successfully executed")
 
     def __check_we_have_users(self):
         if self.__users is None:
