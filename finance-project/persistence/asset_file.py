@@ -11,7 +11,24 @@ class AssetPersistenceFile(AssetPersistenceInterface):
         self.__filename = filename
 
     def add_to_user(self, user: User, asset: Asset):
-        self.__write_to_file(user, asset)
+        data = self.__load_json()
+        user_assets = data.get(str(user.id), [])
+        for every_dict in user_assets:
+            print(every_dict)
+            if every_dict["ticker"] == asset.ticker:
+                raise DuplicateAsset(f"Asset {asset.ticker} already added")
+        user_assets.append(
+            {
+                "ticker": asset.ticker,
+                "name": asset.name,
+                "country": asset.country,
+                "nr": asset.units,
+                "sector": asset.sector,
+            }
+        )
+        data[str(user.id)] = user_assets
+        with open(self.__filename, "w") as f:
+            json.dump(data, f, indent=4)
 
     def delete_for_user(self, user: str, asset: str):
         data = self.__load_json()
@@ -44,23 +61,3 @@ class AssetPersistenceFile(AssetPersistenceInterface):
                 return json.load(f)
         except FileNotFoundError:
             return {}
-
-    def __write_to_file(self, user: User, asset: Asset):
-        data = self.__load_json()
-        user_assets = data.get(str(user.id), [])
-        for every_dict in user_assets:
-            print(every_dict)
-            if every_dict["ticker"] == asset.ticker:
-                raise DuplicateAsset(f"Asset {asset.ticker} already added")
-        user_assets.append(
-            {
-                "ticker": asset.ticker,
-                "name": asset.name,
-                "country": asset.country,
-                "nr": asset.units,
-                "sector": asset.sector,
-            }
-        )
-        data[str(user.id)] = user_assets
-        with open(self.__filename, "w") as f:
-            json.dump(data, f, indent=4)
