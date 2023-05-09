@@ -16,6 +16,7 @@ from domain.exceptions import (
     NonExistentUserId,
     DuplicateUser,
     DuplicateAsset,
+    InvalidUserTable,
 )
 
 logging.basicConfig(
@@ -67,6 +68,11 @@ def return_duplicate_asset(_: Request, e: DuplicateAsset):
 def return_duplicate_user(_: Request, e: DuplicateUser):
     logging.warning(str(e))
     return JSONResponse(status_code=409, content=str(e))
+
+
+@app.exception_handler(InvalidUserTable)
+def return_invalid_table(_: Request, e: InvalidUserTable):
+    return JSONResponse(status_code=400, content=str(e))
 
 
 @app.on_event("startup")
