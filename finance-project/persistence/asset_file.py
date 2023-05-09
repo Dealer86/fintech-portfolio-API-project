@@ -2,11 +2,8 @@ import json
 
 from domain.asset.asset import Asset
 from domain.asset.persistence_interface import AssetPersistenceInterface
+from domain.exceptions import DuplicateAsset
 from domain.user.user import User
-
-
-class DuplicateAsset(Exception):
-    pass
 
 
 class AssetPersistenceFile(AssetPersistenceInterface):
@@ -15,6 +12,16 @@ class AssetPersistenceFile(AssetPersistenceInterface):
 
     def add_to_user(self, user: User, asset: Asset):
         self.__write_to_file(user, asset)
+
+    def delete_for_user(self, user: str, asset: str):
+        data = self.__load_json()
+        if user in data:
+            for d in data[user]:
+                if d["ticker"] == asset:
+                    data[user].remove(d)
+                    break
+        with open(self.__filename, "w") as f:
+            json.dump(data, f, indent=4)
 
     def get_for_user(self, user: User) -> list[Asset]:
         data = self.__load_json()
