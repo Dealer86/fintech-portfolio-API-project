@@ -41,37 +41,38 @@ app.include_router(assets_router)
 @app.exception_handler(InvalidUsername)
 def return_invalid_username(_: Request, e: InvalidUsername):
     invalid_username_error = "Username is not valid! Error: " + str(e)
-    logging.error(invalid_username_error)
+    logging.warning("Exception_handler: " + invalid_username_error)
     return JSONResponse(status_code=400, content=invalid_username_error)
 
 
 @app.exception_handler(NonExistentUserId)
 def return_invalid_id(_: Request, e: NonExistentUserId):
     invalid_id_error = str(e)
-    logging.error(invalid_id_error)
+    logging.warning("Exception_handler: " + invalid_id_error)
     return JSONResponse(status_code=404, content=invalid_id_error)
 
 
 @app.exception_handler(InvalidTicker)
 def return_invalid_ticker(_: Request, e: InvalidTicker):
-    logging.error(str(e))
+    logging.warning("Exception_handler: " + str(e))
     return JSONResponse(status_code=404, content=str(e))
 
 
 @app.exception_handler(DuplicateAsset)
 def return_duplicate_asset(_: Request, e: DuplicateAsset):
-    logging.error(str(e))
+    logging.warning("Exception_handler: " + str(e))
     return JSONResponse(status_code=409, content=str(e))
 
 
 @app.exception_handler(DuplicateUser)
 def return_duplicate_user(_: Request, e: DuplicateUser):
-    logging.warning(str(e))
+    logging.warning("Exception_handler: " + str(e))
     return JSONResponse(status_code=409, content=str(e))
 
 
 @app.exception_handler(InvalidUserTable)
 def return_invalid_table(_: Request, e: InvalidUserTable):
+    logging.warning("Exception_handler: " + str(e))
     return JSONResponse(status_code=400, content=str(e))
 
 
@@ -85,6 +86,7 @@ def clean_images_older_than_24h():
     for g in graphs:
         g__creation_time = os.path.getctime(g)
         if g__creation_time < ago_24h:
+            logging.info("Cleaning images older then 24h...")
             os.remove(g)
 
 
