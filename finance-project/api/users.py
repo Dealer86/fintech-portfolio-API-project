@@ -14,7 +14,14 @@ from domain.exceptions import (
 )
 from domain.user.repo import UserRepo
 from domain.user.factory import UserFactory
-from api.models import UserAdd, UserInfo, AssetInfoUser, AssetAdd, AssetInfoBase
+from api.models import (
+    UserAdd,
+    UserInfo,
+    AssetInfoUser,
+    AssetAdd,
+    AssetInfoBase,
+    UnitsAdd,
+)
 from persistence.asset_file import AssetPersistenceFile
 
 users_router = APIRouter(prefix="/users")
@@ -85,12 +92,13 @@ def create_a_user(new_user: UserAdd, repo=Depends(get_user_repo)):
 def add_asset_to_user(
     user_id: str,
     asset: AssetAdd,
+    units: UnitsAdd,
     repo=Depends(get_user_repo),
     asset_repo=Depends(get_asset_repo),
 ):
     logging.info("Creating a new asset...")
     try:
-        new_asset = AssetFactory().make_new(asset.ticker)
+        new_asset = AssetFactory().make_new(asset.ticker, units.units)
         logging.info(f"Successfully created asset {asset.ticker}")
     except TypeError:
         logging.warning(f"Invalid ticker {asset.ticker}")
