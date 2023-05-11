@@ -15,9 +15,9 @@ class AssetPersistenceSqlite(AssetPersistenceInterface):
             logging.info(f"Executing add_to_user command for user {user.username}...")
             try:
                 cursor.execute(
-                    f"INSERT INTO '{table}' (ticker, name, country, units)"
+                    f"INSERT INTO '{table}' (ticker, name, country, units, sector)"
                     f"VALUES ('{asset.ticker}', '{asset.name}', "
-                    f"'{asset.country}', {asset.units})"
+                    f"'{asset.country}', {asset.units}, '{asset.sector}')"
                 )
                 logging.info(
                     f"Successfully added asset {asset.ticker} to user {user.username}"
@@ -40,13 +40,14 @@ class AssetPersistenceSqlite(AssetPersistenceInterface):
                         f" (ticker TEXT PRIMARY KEY,"
                         f" name TEXT,"
                         f" country TEXT,"
-                        f" units REAL)"
+                        f" units REAL,"
+                        f" sector TEXT)"
                     )
                     logging.info(f"Inserting into {table}")
                     cursor.execute(
-                        f"INSERT INTO '{table}' (ticker, name, country, units)"
+                        f"INSERT INTO '{table}' (ticker, name, country, units, sector)"
                         f"VALUES ('{asset.ticker}', '{asset.name}', "
-                        f"'{asset.country}', {asset.units})"
+                        f"'{asset.country}', {asset.units}, '{asset.sector}')"
                     )
                 conn.commit()
 
@@ -72,7 +73,7 @@ class AssetPersistenceSqlite(AssetPersistenceInterface):
                     raise e
             assets_info = cursor.fetchall()
         assets = [
-            Asset(ticker=x[0], nr=x[3], name=x[1], country=x[2], sector="sec")
+            Asset(ticker=x[0], nr=x[3], name=x[1], country=x[2], sector=x[4])
             for x in assets_info
         ]
         return assets
