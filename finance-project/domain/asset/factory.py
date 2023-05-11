@@ -4,7 +4,7 @@ from domain.exceptions import InvalidTicker
 
 
 class AssetFactory:
-    def make_new(self, ticker: str) -> Asset:
+    def make_new(self, ticker: str, units: int = 0) -> Asset:
         t = yahooquery.Ticker(ticker)
 
         profile = t.summary_profile[ticker]
@@ -18,14 +18,14 @@ class AssetFactory:
         sector = profile["sector"]
         return Asset(
             ticker=ticker,
-            nr=0,
+            nr=units,
             name=name,
             country=country,
             sector=sector,
         )
 
-    @staticmethod
-    def __extract_name(profile: dict) -> str:
+    @classmethod
+    def __extract_name(cls, profile: dict) -> str:
         summary = profile["longBusinessSummary"]
         words = summary.split(" ")
         first_2_words = words[0:2]
