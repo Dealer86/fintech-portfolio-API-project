@@ -50,6 +50,7 @@ def get_user(user_id: str, repo=Depends(get_user_repo)):
 
 @users_router.delete("/{user_id}")
 def delete_user(user_id: str, repo=Depends(get_user_repo)):
+    logging.info(f"Deleting user with id {user_id}")
     repo.delete(user_id)
     return {"status": "ok"}
 
@@ -58,6 +59,7 @@ def delete_user(user_id: str, repo=Depends(get_user_repo)):
 def delete_asset_for_user(
     user_id: str, asset_ticker: str, asset_repo=Depends(get_asset_repo)
 ):
+    logging.info(f"Deleting asset {asset_ticker} for user with id {user_id}")
     asset_repo.delete_for_user(user_id, asset_ticker)
 
 
