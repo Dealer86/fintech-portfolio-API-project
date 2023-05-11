@@ -21,7 +21,7 @@ class AssetAdd(BaseModel):
 
 
 class UnitsAdd(BaseModel):
-    units: float = Field("Units to add for asset")
+    units: float = Field(description="Units to add for asset, default is 0")
 
 
 class AssetInfoBase(OrmModel):
