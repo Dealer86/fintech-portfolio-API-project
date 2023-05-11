@@ -20,6 +20,10 @@ class AssetAdd(BaseModel):
     )
 
 
+class UnitsAdd(BaseModel):
+    units: float = Field("Units to add for asset")
+
+
 class AssetInfoBase(OrmModel):
     ticker: str = Field(
         description="A ticker is a unique series of letters that represents a specific company's stock or security"
@@ -67,6 +71,7 @@ class UserInfo(OrmModel):
         description="ID by which to identify a specific user",
     )
     username: str
-    stocks: list[AssetInfoBase] = Field(
-        description="List of stocks, also known as shares or equities, represent ownership in a publicly-traded company"
+    stocks: list[AssetInfoUser] = Field(
+        description="List of stocks related to user, also known as shares or equities,"
+        " represent ownership in a publicly-traded company"
     )
