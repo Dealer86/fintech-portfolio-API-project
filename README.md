@@ -8,7 +8,7 @@ The Fintech Portfolio API is a web server with a REST API that allows you to kee
 
 ### Windows
 1. Clone the git repository using `<git_repo_url>`
-2. Navigate to the `cd finance-project` directory
+2. Navigate to the `cd <your-created-directory>` directory
 3. Create a new virtual environment by running `python -m venv env/`
 4. Activate the virtual environment by running `.\env\Scripts\activate`
 5. Upgrade pip by running `python.exe -m pip install --upgrade pip`
@@ -16,7 +16,7 @@ The Fintech Portfolio API is a web server with a REST API that allows you to kee
 
 ### Linux
 1. Clone the git repository using `<git_repo_url>`
-2. Navigate to the `cd finance-project` directory
+2. Navigate to the `cd <your-created-directory>` directory
 3. Create a new virtual environment by running `python3 -m venv env/`
 4. Activate the virtual environment by running `source env/bin/activate`
 5. Upgrade pip by running `pip install --upgrade pip`
@@ -29,6 +29,7 @@ This project uses the following technologies:
 * Yahooquery - a Python library that allows you to query Yahoo Finance data in a simple and efficient way
 * Yfinance - a Python library that provides a simple way to download historical market data from Yahoo Finance
 * Matplotlib - a Python library for creating static, animated, and interactive visualizations in Python
+* Sqlite3 - SQLite is library that implements a small, fast, self-contained, high-reliability, full-featured, SQL database engine
 
 ## Resources
 For more information about FastAPI, visit their [official documentation](https://fastapi.tiangolo.com/).
@@ -38,3 +39,5 @@ For more information about yahooquery, visit their [official documentation](http
 For more information about yfinance, visit their [official documentation](https://pypi.org/project/yfinance/).
 
 For more information about Matplotlib, visit their [official documentation](https://matplotlib.org/stable/index.html)
+
+For more information about Sqlite3, visit their [official documentation](https://www.sqlite.org/index.html)
