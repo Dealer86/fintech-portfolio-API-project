@@ -22,7 +22,7 @@ class AssetRepo:
         self.__check_we_have_assets(user)
         return self.__assets
 
-    def delete_for_user(self, user_id: str, asset: str):
+    def delete_for_user(self, user_id: str, asset: Asset):
         logging.info("AssetRepo executing delete for user command...")
         self.__persistence.delete_for_user(user_id, asset)
 
