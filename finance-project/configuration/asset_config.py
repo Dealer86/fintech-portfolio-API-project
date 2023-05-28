@@ -12,8 +12,7 @@ def set_asset_persistence_type(file_path: str):
     if user_config_choice.get("persistence") == "sqlite":
         return AssetPersistenceSqlite()
     elif user_config_choice.get("persistence") == "file":
-        # return AssetPersistenceSqlite()
-        return AssetPersistenceFile("main_assets.json")
+        return AssetPersistenceFile("main_users.json")
     else:
         raise InvalidPersistence(
             "Unknown persistence type, choose between sqlite or file in config.json"
