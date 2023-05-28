@@ -31,3 +31,7 @@ class AssetFactory:
         first_2_words = words[0:2]
         name = " ".join(first_2_words)
         return name
+
+    @classmethod
+    def from_tuple(cls, info: tuple) -> Asset:
+        return Asset(ticker=info[0], nr=info[1], name=info[2], country=info[3], sector=info[4])
