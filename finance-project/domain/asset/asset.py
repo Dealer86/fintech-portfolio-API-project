@@ -75,3 +75,7 @@ class Asset:
                 f" lower than current price {self.current_price}"
             )
         return "Values are the same"
+
+    def to_tuple(self):
+        return self.ticker, self.units, self.name, self.country, self.sector
+
