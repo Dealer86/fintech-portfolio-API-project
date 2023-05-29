@@ -1,5 +1,6 @@
 import uuid
 
+from domain.asset.factory import AssetFactory
 from domain.exceptions import InvalidUsername
 from domain.user.user import User
 
@@ -28,3 +29,8 @@ class UserFactory:
             uuid=uuid.UUID(info[0]),
             username=info[1],
         )
+
+    @classmethod
+    def from_tuple(cls, info: tuple) -> User:
+        asset_obj = [AssetFactory.from_tuple(a) for a in info[2]]
+        return User(uuid=uuid.UUID(info[0]), username=info[1], stocks=asset_obj)
