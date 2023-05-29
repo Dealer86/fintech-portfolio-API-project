@@ -1,4 +1,3 @@
-import uuid
 from uuid import UUID
 
 from domain.asset.asset import Asset
@@ -26,9 +25,10 @@ class User:
     def stocks(self) -> list[Asset]:
         return self.__stocks
 
+    @stocks.setter
+    def stocks(self, value):
+        self.__stocks = value
+
     def to_tuple(self) -> tuple:
         asset_tuple = [a.to_tuple() for a in self.stocks]
-        print(asset_tuple)
         return str(self.id), self.__username, asset_tuple
-
-
