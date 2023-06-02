@@ -15,9 +15,9 @@ class AssetPersistenceSqlite(AssetPersistenceInterface):
             logging.info(f"Executing add_to_user command for user {user.username}...")
             try:
                 cursor.execute(
-                    f"INSERT INTO '{table}' (ticker, name, country, units, sector)"
+                    f"INSERT INTO '{table}' (ticker, name, country, units, sector, currency, current_price)"
                     f"VALUES ('{asset.ticker}', '{asset.name}', "
-                    f"'{asset.country}', {asset.units}, '{asset.sector}')"
+                    f"'{asset.country}', {asset.units}, '{asset.sector}', '{asset.currency}', {asset.current_price})"
                 )
                 logging.info(
                     f"Successfully added asset {asset.ticker} to user {user.username}"
@@ -41,13 +41,15 @@ class AssetPersistenceSqlite(AssetPersistenceInterface):
                         f" name TEXT,"
                         f" country TEXT,"
                         f" units REAL,"
-                        f" sector TEXT)"
+                        f" sector TEXT,"
+                        f"currency TEXT,"
+                        f"current_price REAL)"
                     )
                     logging.info(f"Inserting into {table}")
                     cursor.execute(
-                        f"INSERT INTO '{table}' (ticker, name, country, units, sector)"
+                        f"INSERT INTO '{table}' (ticker, name, country, units, sector, currency, current_price)"
                         f"VALUES ('{asset.ticker}', '{asset.name}', "
-                        f"'{asset.country}', {asset.units}, '{asset.sector}')"
+                        f"'{asset.country}', {asset.units}, '{asset.sector}', '{asset.currency}', {asset.current_price})"
                     )
                 conn.commit()
 
