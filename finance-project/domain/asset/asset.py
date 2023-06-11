@@ -77,5 +77,5 @@ class Asset:
         return "Values are the same"
 
     def to_tuple(self):
-        return self.ticker, self.units, self.name, self.country, self.sector
+        return self.ticker, self.units, self.name, self.country, self.sector, self.currency, self.current_price
 

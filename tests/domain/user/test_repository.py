@@ -10,7 +10,7 @@ class UserRepoTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.users_file = "test_users.json"
-        cls.assets_file = "test_assets.json"
+        cls.assets_file = "test_users.json"
         cls.persistence = UserPersistenceFile(cls.users_file)
         cls.asset_persistence = AssetPersistenceFile(cls.assets_file)
         cls.repo = UserRepo(cls.persistence, cls.asset_persistence)

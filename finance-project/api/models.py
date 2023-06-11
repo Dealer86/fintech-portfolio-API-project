@@ -37,6 +37,9 @@ class AssetInfoBase(OrmModel):
     sector: str = Field(
         description="Refers to a group of companies or industries that share similar characteristics "
     )
+    current_price: int = Field(description="Price of the asset when added")
+
+    currency: str = Field(description="Currency for asset")
 
 
 class AssetInfoUser(AssetInfoBase):
