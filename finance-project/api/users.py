@@ -72,6 +72,13 @@ def update_user(user_id: str, username: str, repo=Depends(get_user_repo)):
         raise e
     return repo.get_by_id(user_id)
 
+@users_router.post("/{users_id}", response_model=UserInfo)
+def update_unit_number_of_assets_for_user(users_id: str, asset: str, units_number: float,
+                                          asset_repo=Depends(get_asset_repo), repo=Depends(get_user_repo)):
+    our_user = repo.get_by_id(users_id)
+    asset_repo.update_unit_number_of_assets_for_user(our_user, asset, units_number)
+
+    return repo.get_by_id(users_id)
 
 @users_router.post("", response_model=UserInfo)
 def create_a_user(new_user: UserAdd, repo=Depends(get_user_repo)):
