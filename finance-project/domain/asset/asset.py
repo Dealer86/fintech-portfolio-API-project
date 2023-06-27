@@ -19,6 +19,10 @@ class Asset:
     def units(self) -> float:
         return self.__nr
 
+    @units.setter
+    def units(self, units_number: float):
+        self.__nr = units_number
+
     @property
     def name(self) -> str:
         return self.__name
