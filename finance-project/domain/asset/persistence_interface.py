@@ -16,3 +16,7 @@ class AssetPersistenceInterface(ABC):
     @abstractmethod
     def delete_for_user(self, user_id: str, asset: str):
         pass
+
+    @abstractmethod
+    def update_unit_number_of_assets_for_user(self, user: User, asset: str, units_number: float):
+        pass
