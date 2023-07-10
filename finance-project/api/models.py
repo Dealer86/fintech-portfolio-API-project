@@ -20,10 +20,6 @@ class AssetAdd(BaseModel):
     )
 
 
-class UnitsAdd(BaseModel):
-    units: float = Field(description="Units to add for asset, default is 0")
-
-
 class AssetInfoBase(OrmModel):
     ticker: str = Field(
         description="A ticker is a unique series of letters that represents a specific company's stock or security"
