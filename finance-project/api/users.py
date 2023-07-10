@@ -20,7 +20,6 @@ from api.models import (
     AssetInfoUser,
     AssetAdd,
     AssetInfoBase,
-    UnitsAdd,
 )
 from persistence.asset_file import AssetPersistenceFile
 
@@ -72,13 +71,20 @@ def update_user(user_id: str, username: str, repo=Depends(get_user_repo)):
         raise e
     return repo.get_by_id(user_id)
 
-@users_router.post("/{users_id}", response_model=UserInfo)
-def update_unit_number_of_assets_for_user(users_id: str, asset: str, units_number: float,
-                                          asset_repo=Depends(get_asset_repo), repo=Depends(get_user_repo)):
+
+@users_router.patch("/{users_id}", response_model=UserInfo)
+def update_unit_number_of_assets_for_user(
+    users_id: str,
+    asset: str,
+    units_number: float,
+    asset_repo=Depends(get_asset_repo),
+    repo=Depends(get_user_repo),
+):
     our_user = repo.get_by_id(users_id)
     asset_repo.update_unit_number_of_assets_for_user(our_user, asset, units_number)
 
     return repo.get_by_id(users_id)
+
 
 @users_router.post("", response_model=UserInfo)
 def create_a_user(new_user: UserAdd, repo=Depends(get_user_repo)):
@@ -99,13 +105,12 @@ def create_a_user(new_user: UserAdd, repo=Depends(get_user_repo)):
 def add_asset_to_user(
     user_id: str,
     asset: AssetAdd,
-    units: UnitsAdd,
     repo=Depends(get_user_repo),
     asset_repo=Depends(get_asset_repo),
 ):
     logging.info("Creating a new asset...")
     try:
-        new_asset = AssetFactory().make_new(asset.ticker, units.units)
+        new_asset = AssetFactory().make_new(asset.ticker)
         logging.info(f"Successfully created asset {asset.ticker}")
     except TypeError:
         logging.warning(f"Invalid ticker {asset.ticker}")
