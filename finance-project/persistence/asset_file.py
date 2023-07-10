@@ -2,7 +2,6 @@ import json
 import logging
 import os
 
-
 from domain.user.factory import UserFactory
 from domain.asset.asset import Asset
 from domain.asset.persistence_interface import AssetPersistenceInterface
@@ -27,6 +26,15 @@ class AssetPersistenceFile(AssetPersistenceInterface):
         for u in user_list:
             if str(u.id) == str(user.id):
                 u.stocks.append(asset)
+        self.__save_to_file(user_list)
+
+    def update_unit_number_of_assets_for_user(self, user: User, asset: str, units_number: float):
+        user_list = self.get_all()
+        for u in user_list:
+            if str(u.id) == str(user.id):
+                stock = [u for u in u.stocks if u.ticker == asset]
+                for s in stock:
+                    s.units = units_number
         self.__save_to_file(user_list)
 
     def delete_for_user(self, user_id: str, asset: str):

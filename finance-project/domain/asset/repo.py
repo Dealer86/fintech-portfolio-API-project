@@ -40,6 +40,10 @@ class AssetRepo:
         logging.info("AssetRepo executing delete for user command...")
         self.__persistence.delete_for_user(user_id, asset)
 
+    def update_unit_number_of_assets_for_user(self, user: User, asset: str, units_number: float):
+        self.__persistence.update_unit_number_of_assets_for_user(user, asset, units_number)
+        self.__refresh_cache(user)
+
     def __check_we_have_assets(self, user: User):
         if self.__assets is None:
             self.__assets = self.__persistence.get_for_user(user)

@@ -4,7 +4,7 @@ from domain.exceptions import InvalidTicker
 
 
 class AssetFactory:
-    def make_new(self, ticker: str, units: int = 0) -> Asset:
+    def make_new(self, ticker: str) -> Asset:
         t = yahooquery.Ticker(ticker)
 
         profile = t.summary_profile[ticker]
@@ -18,7 +18,7 @@ class AssetFactory:
         sector = profile["sector"]
         return Asset(
             ticker=ticker,
-            nr=units,
+            nr=0,
             name=name,
             country=country,
             sector=sector,
