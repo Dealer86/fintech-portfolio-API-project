@@ -79,6 +79,13 @@ def return_invalid_table(_: Request, e: InvalidUserTable):
 @app.on_event("startup")
 @repeat_every(seconds=60 * 60 * 24)
 def clean_images_older_than_24h():
+    """
+    Task to clean up images older than 24 hours.
+
+    It retrieves a list of files in the current directory, filters out files ending with ".png",
+    calculates the current POSIX time, and defines a cutoff time 24 hours ago.
+    For each file, it checks the creation time and deletes the file if it was created before the cutoff time.
+    """
     files = os.listdir(".")
     graphs = [f for f in files if f.endswith(".png")]
     current_posix_time = time.time()
