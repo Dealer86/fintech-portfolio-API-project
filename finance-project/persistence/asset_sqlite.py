@@ -107,3 +107,36 @@ class AssetPersistenceSqlite(AssetPersistenceInterface):
                     )
                 else:
                     raise e
+
+    def update_unit_number_of_assets_for_user(
+        self, user: User, asset: str, units_number: float
+    ):
+        table = f"{str(user.id)}-assets".replace("-", "_")
+        with sqlite3.connect("main_users.db") as conn:
+            cursor = conn.cursor()
+            logging.info(
+                f"Executing update_unit_number_of_assets_for_user command for updating units_number {units_number}"
+                f" for asset {asset} from user with id {str(user.id)} ..."
+            )
+            try:
+                cursor.execute(
+                    f"UPDATE '{table}' SET units = {units_number} WHERE ticker = '{asset}'"
+                )
+                logging.info(
+                    f"Successfully executed update_unit_number_of_assets_for_user command for updating units_number"
+                    f" {units_number} for asset {asset} from user with id {str(user.id)}."
+                )
+            except sqlite3.OperationalError as e:
+                if "no such table" in str(e):
+                    logging.warning(
+                        f"Could not execute update_unit_number_of_assets_for_user command for updating units_number"
+                        f" {units_number} for asset {asset} from user with id {str(user.id)}.Reason: "
+                        + str(e)
+                    )
+                    raise InvalidUserTable(
+                        f"Could not execute update_unit_number_of_assets_for_user command for updating units_number"
+                        f" {units_number} for asset {asset} from user with id {str(user.id)}.Reason: "
+                        + str(e)
+                    )
+                else:
+                    raise e
