@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from fastapi.responses import FileResponse
 import yfinance
 import uuid
 from matplotlib import pyplot
@@ -21,8 +22,10 @@ def get_history(ticker: str, start_date: str = "2019-01-30", end_date: str = "20
     history = t.history(interval="1d", start=start_date, end=end_date)
     data = (history["Open"])
     pyplot.plot(data)
-    pyplot.savefig(f"{ticker} - {uuid.uuid4()}.png")
+    image_name = f"{ticker} - {uuid.uuid4()}.png"
+    pyplot.savefig(image_name)
     pyplot.clf()
+    return FileResponse(image_name, media_type="image/png")
 
 
 
