@@ -9,13 +9,12 @@ from domain.user.user import User
 class AssetRepo:
     def __init__(self, persistence: AssetPersistenceInterface):
         self.__persistence = persistence
-        self.__assets = None
+        self.__assets = {}
 
     def add_to_user(self, user: User, asset: Asset):
         logging.info(
             f"AssetRepo executing add to user command for user with id {str(user.id)}..."
         )
-        self.__check_we_have_assets(user)
         if asset.ticker in [a.ticker for a in self.get_for_user(user)]:
             logging.warning(
                 f"Asset with ticker {asset.ticker} already added for user {user.username}"
@@ -27,26 +26,33 @@ class AssetRepo:
             f"AssetRepo succesfully executed add to user command for user with id {str(user.id)}"
         )
         self.__persistence.add_to_user(user, asset)
+        # Clear user's cache when adding new asset data
+        if str(user.id) in self.__assets:
+            del self.__assets[str(user.id)]
 
-        self.__assets.append(asset)
-        self.__refresh_cache(user)
 
     def get_for_user(self, user: User) -> list[Asset]:
+
+        # Check if user's crypto data is cached
+        if str(user.id) in self.__assets:
+            return self.__assets[str(user.id)]
         logging.info("AssetRepo executing get for user command...")
-        self.__check_we_have_assets(user)
-        return self.__assets
+        # If not cached, fetch from the database and cache it
+        asset_list = self.__persistence.get_for_user(user)
+        self.__assets[str(user.id)] = asset_list
+        return asset_list
+
 
     def delete_for_user(self, user_id: str, asset: str):
         logging.info("AssetRepo executing delete for user command...")
         self.__persistence.delete_for_user(user_id, asset)
+        # Clear user's cache when deleting crypto data
+        if user_id in self.__assets:
+            del self.__assets[user_id]
 
     def update_unit_number_of_assets_for_user(self, user: User, asset: str, units_number: float):
         self.__persistence.update_unit_number_of_assets_for_user(user, asset, units_number)
-        self.__refresh_cache(user)
+        # Clear user's cache when updating crypto units
+        if str(user.id) in self.__assets:
+            del self.__assets[str(user.id)]
 
-    def __check_we_have_assets(self, user: User):
-        if self.__assets is None:
-            self.__assets = self.__persistence.get_for_user(user)
-
-    def __refresh_cache(self, user: User):
-        self.__assets = self.__persistence.get_for_user(user)
