@@ -7,25 +7,26 @@ The Fintech Portfolio API is a web server with a REST API that allows you to kee
 ## Deployment Instructions
 
 ### Windows
-1. Clone the git repository using `<git_repo_url>`
-2. Navigate to the `cd <your-created-directory>` directory
-3. Create a new virtual environment by running `python -m venv env/`
-4. Activate the virtual environment by running `.\env\Scripts\activate`
-5. Upgrade pip by running `python.exe -m pip install --upgrade pip`
-6. Install the required dependencies by running `pip install -r requirements.txt`
+1. Clone the git repository using `<git_repo_url>`.
+2. Navigate to the `cd <your-created-directory>` directory.
+3. Create a new virtual environment by running `python -m venv env/`.
+4. Activate the virtual environment by running `.\env\Scripts\activate`.
+5. Upgrade pip by running `python.exe -m pip install --upgrade pip`.
+6. Install the required dependencies by running `pip install -r requirements.txt`.
 7. Configure database settings(pick sqlite3 or json) in the config.json file found in configuration file.
 8. Run main.py
 9. Check [swagger](http://127.0.0.1:8000/docs). 
 
 ### Linux
-1. Clone the git repository using `<git_repo_url>`
-2. Navigate to the `cd <your-created-directory>` directory
-3. Create a new virtual environment by running `python3 -m venv env/`
-4. Activate the virtual environment by running `source env/bin/activate`
-5. Upgrade pip by running `pip install --upgrade pip`
-6. Install the required dependencies by running `pip install -r requirements.txt`
-7. Run main.py
-8. Check [swagger](http://127.0.0.1:8000/docs).
+1. Clone the git repository using `<git_repo_url>`.
+2. Navigate to the `cd <your-created-directory>`.
+3. Create a new virtual environment by running `python3 -m venv env/`.
+4. Activate the virtual environment by running `source env/bin/activate`.
+5. Upgrade pip by running `pip install --upgrade pip`.
+6. Install the required dependencies by running `pip install -r requirements.txt`.
+7. Configure database settings(pick sqlite3 or json) in the config.json file found in configuration file.
+8. Run main.py
+9. Check [swagger](http://127.0.0.1:8000/docs).
 
 ## Technology Stack
 This project uses the following technologies:
