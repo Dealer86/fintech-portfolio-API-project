@@ -13,8 +13,9 @@ The Fintech Portfolio API is a web server with a REST API that allows you to kee
 4. Activate the virtual environment by running `.\env\Scripts\activate`
 5. Upgrade pip by running `python.exe -m pip install --upgrade pip`
 6. Install the required dependencies by running `pip install -r requirements.txt`
-7. Run main.py
-8. Check [swagger](http://127.0.0.1:8000/docs). 
+7. Configure database settings(pick sqlite3 or json) in the config.py file found in configuration file.
+8. Run main.py
+9. Check [swagger](http://127.0.0.1:8000/docs). 
 
 ### Linux
 1. Clone the git repository using `<git_repo_url>`
