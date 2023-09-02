@@ -60,7 +60,7 @@ def delete_asset_for_user(user_id: str, asset: str, asset_repo=Depends(get_asset
     asset_repo.delete_for_user(user_id, asset)
 
 
-@users_router.put("/{user_id}", response_model=UserInfo)
+@users_router.patch("/{user_id}/username", response_model=UserInfo)
 def update_user(user_id: str, username: str, repo=Depends(get_user_repo)):
     logging.info(f"Updating user with id {user_id} with new username {username}...")
     try:
@@ -72,7 +72,7 @@ def update_user(user_id: str, username: str, repo=Depends(get_user_repo)):
     return repo.get_by_id(user_id)
 
 
-@users_router.patch("/{users_id}", response_model=UserInfo)
+@users_router.patch("/{users_id}/units_number", response_model=UserInfo)
 def update_unit_number_of_assets_for_user(
     users_id: str,
     asset: str,
