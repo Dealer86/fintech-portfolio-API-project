@@ -26,7 +26,9 @@ class UserPersistenceFile(UserPersistenceInterface):
                 contents = f.read()
             users_info = json.loads(contents)
             factory = UserFactory()
-            logging.info("UserPersistenceFile get all command was successfully executed")
+            logging.info(
+                "UserPersistenceFile get all command was successfully executed"
+            )
             return [factory.make_from_persistence(x) for x in users_info]
 
         except FailToWriteToFile as e:
@@ -45,7 +47,9 @@ class UserPersistenceFile(UserPersistenceInterface):
         try:
             with open(self.__file_path, "w") as f:
                 f.write(users_json)
-                logging.info(f"UserPersistenceFile add command successfully executed, added {user.username} to file")
+                logging.info(
+                    f"UserPersistenceFile add command successfully executed, added {user.username} to file"
+                )
         except FailToWriteToFile as e:
             logging.error("Could not write file. Error: " + str(e))
             raise e
@@ -66,6 +70,7 @@ class UserPersistenceFile(UserPersistenceInterface):
 
     def update(self, user_id: str, new_username: str):
         logging.info("UserPersistenceFile executing update command...")
+        UserFactory.validate_username(new_username)
         current_users = self.get_all()
         for user in current_users:
             if user.id == uuid.UUID(hex=user_id):
