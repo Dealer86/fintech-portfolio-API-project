@@ -1,5 +1,5 @@
 import uuid
-
+import logging
 from domain.asset.factory import AssetFactory
 from domain.exceptions import InvalidUsername
 from domain.user.user import User
@@ -8,6 +8,15 @@ from domain.user.user import User
 class UserFactory:
     @classmethod
     def make_new(cls, username: str) -> User:
+        logging.info(
+            f"User Factory executing make_new command for user with username {username}"
+        )
+        cls.validate_username(username)
+        user_uuid = uuid.uuid4()
+        return User(user_uuid, username)
+
+    @classmethod
+    def validate_username(cls, username):
         if len(username) < 6:
             raise InvalidUsername("Username should have at least 6 characters")
         if len(username) > 20:
@@ -20,8 +29,6 @@ class UserFactory:
             raise InvalidUsername(
                 "Username should contain only alpha-numeric characters or '-'"
             )
-        user_uuid = uuid.uuid4()
-        return User(user_uuid, username)
 
     @classmethod
     def make_from_persistence(cls, info: tuple) -> User:
