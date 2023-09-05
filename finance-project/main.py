@@ -40,7 +40,7 @@ app.include_router(assets_router)
 
 @app.exception_handler(InvalidUsername)
 def return_invalid_username(_: Request, e: InvalidUsername):
-    invalid_username_error = "Username is not valid! Error: " + str(e)
+    invalid_username_error = "Username is not valid! Reason: " + str(e)
     logging.warning("Exception_handler: " + invalid_username_error)
     return JSONResponse(status_code=400, content=invalid_username_error)
 
