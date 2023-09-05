@@ -1,10 +1,12 @@
 import yahooquery
 from domain.asset.asset import Asset
 from domain.exceptions import InvalidTicker
+import logging
 
 
 class AssetFactory:
     def make_new(self, ticker: str) -> Asset:
+        logging.info(f"Asset Factory executing create_new command for ticker {ticker}")
         t = yahooquery.Ticker(ticker)
 
         profile = t.summary_profile[ticker]
@@ -16,6 +18,9 @@ class AssetFactory:
 
         country = profile["country"]
         sector = profile["sector"]
+        logging.info(
+            f"Asset Factory successfully executed create_new command for ticker {ticker}"
+        )
         return Asset(
             ticker=ticker,
             nr=0,
@@ -34,4 +39,6 @@ class AssetFactory:
 
     @classmethod
     def from_tuple(cls, info: tuple) -> Asset:
-        return Asset(ticker=info[0], nr=info[1], name=info[2], country=info[3], sector=info[4])
+        return Asset(
+            ticker=info[0], nr=info[1], name=info[2], country=info[3], sector=info[4]
+        )
