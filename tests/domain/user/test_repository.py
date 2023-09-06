@@ -58,11 +58,18 @@ class UserRepoTestCase(unittest.TestCase):
 
         self.assertEqual(expected_username, actual_user.username)
 
+    def test_it_gets_all_users(self):
+        # execution
+        actual_users = self.repo.get_all()
+        # assertion
+        self.assertEqual(len(self.repo.get_all()), 3)
+
     @classmethod
     def tearDownClass(cls) -> None:
         import os
 
-        os.remove("test_users.json")
+        if os.path.exists("test_users.json"):
+            os.remove("test_users.json")
 
 
 if __name__ == "__main__":
