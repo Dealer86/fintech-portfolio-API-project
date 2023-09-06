@@ -1,5 +1,7 @@
 import unittest
 
+from domain.asset.asset import Asset
+from domain.asset.factory import AssetFactory
 from domain.exceptions import InvalidUsername
 from domain.user.factory import UserFactory
 from domain.user.user import User
@@ -59,7 +61,6 @@ class UserFactoryTestCase(unittest.TestCase):
 
     def test_it_makes_user_object_from_persistence(self):
         # set up
-
         uuid_ = "4a4c58ee-8fd4-415e-9801-947e86b97d7e"
         username = "random-1"
         info = (uuid_, username)
@@ -70,6 +71,21 @@ class UserFactoryTestCase(unittest.TestCase):
 
         # assertion
         self.assertIsInstance(user, User)
+
+    def test_it_returns_a_user_of_type_user_from_tuple(self):
+        # set up
+        new_user = UserFactory.make_new("newuser")
+        new_asset_tuple = (
+            str(new_user.id),
+            new_user.username,
+            [("aapl", 2, "Apple", "NewYork", "Tech")],
+        )
+
+        # execution
+        new_user = UserFactory.from_tuple(new_asset_tuple)
+
+        # assertion
+        self.assertIsInstance(new_user, User)
 
 
 if __name__ == "__main__":
