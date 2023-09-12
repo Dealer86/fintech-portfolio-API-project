@@ -71,6 +71,7 @@ def delete_asset_for_user(user_id: str, asset: str, asset_repo=Depends(get_asset
 @users_router.patch("/{user_id}/username", response_model=UserInfo)
 def update_user(user_id: str, username: str, repo=Depends(get_user_repo)):
     logging.info(f"Updating user with id {user_id} and new username {username}...")
+    UserFactory.validate_username(username)
     repo.update(user_id, username)
     logging.info(f"Successfully update user {username} with ID {user_id}")
     return repo.get_by_id(user_id)
