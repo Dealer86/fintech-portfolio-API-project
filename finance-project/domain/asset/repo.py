@@ -4,8 +4,10 @@ from domain.asset.asset import Asset
 from domain.asset.persistence_interface import AssetPersistenceInterface
 from domain.exceptions import DuplicateAsset
 from domain.user.user import User
+from singleton import singleton
 
 
+@singleton
 class AssetRepo:
     def __init__(self, persistence: AssetPersistenceInterface):
         self.__persistence = persistence
