@@ -55,21 +55,6 @@ class TestAssetPersistenceSqlite(unittest.TestCase):
 
         self.assertEqual([], actual_user_assets)
 
-    @classmethod
-    def tearDownClass(cls):
-        # Clean up the data from all tables in the database
-        db = sqlite3.connect("main_users.db")
-        cursor = db.cursor()
-        cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-        tables = cursor.fetchall()
-
-        for table in tables:
-            table_name = table[0]
-            cursor.execute(f"DELETE FROM '{table_name}';")
-
-        db.commit()
-        db.close()
-
 
 if __name__ == "__main__":
     unittest.main()
