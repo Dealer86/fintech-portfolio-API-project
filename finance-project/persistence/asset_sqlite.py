@@ -30,9 +30,8 @@ class AssetPersistenceSqlite(AssetPersistenceInterface):
                     )
             except sqlite3.OperationalError as e:
                 if "no such table" in str(e):
-                    logging.warning(
-                        f"Failed executing command add_to_user to add asset to user {user.username} list."
-                        f"Reason: " + str(e)
+                    logging.info(
+                        f"Creating table for user {user.username}." f"Reason: " + str(e)
                     )
                     logging.info("Creating table...")
                     cursor.execute(
@@ -65,11 +64,7 @@ class AssetPersistenceSqlite(AssetPersistenceInterface):
                 )
             except sqlite3.OperationalError as e:
                 if "no such table" in str(e):
-                    logging.warning(
-                        f"Failed executing command get_for_user for getting"
-                        f" assets lists for user {user.username}."
-                        f"Reason: " + str(e)
-                    )
+                    logging.info(f"Returning empty list. Reason: " + str(e))
                     return []
                 else:
                     raise e
