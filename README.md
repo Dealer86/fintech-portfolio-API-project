@@ -29,6 +29,14 @@ The Fintech Portfolio API is a web server with a REST API that allows you to kee
 9. Check [swagger](http://127.0.0.1:8000/docs).
 
 ## Technology Stack
+ * Fintech Portfolio API web server that allows you to keep track of your different financial assets(stocks) and compare
+ their evolution over time.
+ Leveraging modern tools such as FastAPI, Uvicorn, SQlite3, JSON, along with integration of various financial libraries
+ like Yahooquery, and Yfinance, this project showcases my skills in both backend development and fintech API
+ integration. Following SOLID principles, employing design patterns like Repository, Factory and adhering to
+ Domain-Driven Design (DDD) concepts, I've created a robust and extensible application.
+ Comprehensive unit tests using the UnitTest framework ensure the reliability of the codebase.
+
 This project uses the following technologies:
 * FastAPI - a modern, fast (high-performance) web framework for building APIs with Python 3.6+ based on standard Python type hints
 * Uvicorn - a lightning-fast ASGI server, built on top of the asyncio event loop
